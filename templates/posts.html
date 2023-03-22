@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+<h1 align="center">All Posts</h1>
+{% for post in posts %}
+<hr class="invis">
+
+<div class="blog-box row">
+    <div class="col-md-4">
+        <div class="post-media">
+            <a href="tech-single.html" title="">
+                <img src="static/images/coding.jpg" alt="" class="img-fluid">
+                <div class="hovereffect"></div>
+            </a>
+        </div><!-- end media -->
+    </div><!-- end col -->
+
+    <div class="blog-meta big-meta col-md-8">
+        <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title }}</a>
+        </h4>
+        <p>{{ post.content }}</p>
+        <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html"
+                                     title="">Technology</a></small>
+        <small><a href="tech-single.html" title="">
+            {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</a></small>
+        <small><a href="tech-author.html" title="">by Admin</a></small>
+        <small><a href="tech-single.html" title=""><i class="fa fa-eye"></i> 4412</a></small>
+    </div><!-- end meta -->
+</div><!-- end blog-box -->
+
+
+{% endfor %}
+
+<hr class="invis">
+
+<!-- pagination -->
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-start">
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div><!-- end col -->
+</div><!-- end row -->
+
+{% endblock %}

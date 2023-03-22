@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+<p>500 Internal server error, go to the <a href="{{url_for('index')}}">Home</a> page
+{% endblock %}
