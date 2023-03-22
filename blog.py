@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_ckeditor import CKEditor
 from flask_login import UserMixin, \
     login_user, LoginManager, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -14,6 +15,7 @@ from configs import *
 # "https://www.digitalocean.com/community/tutorials/how-to-use-many-to-many-database-relationships-with-flask-sqlalchemy"
 
 app = Flask(__name__)
+ckeditor = CKEditor(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -35,14 +37,14 @@ class Posts(db.Model):
     def __repr__(self):
         return f'Post {self.title}'
 
-
-class Tags(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tag = db.Column(db.String(50))
-    posts_ids = db.Column(db.Integer, db.ForeignKey('posts.id'))
-
-    def __repr__(self):
-        return f'Post {self.tag}'
+#
+# class Tags(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     tag = db.Column(db.String(50))
+#     posts_ids = db.Column(db.Integer, db.ForeignKey('posts.id'))
+#
+#     def __repr__(self):
+#         return f'Post {self.tag}'
 
 
 @app.route("/brick")
