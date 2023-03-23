@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_ckeditor import CKEditor
@@ -23,6 +23,21 @@ app.config['SECRET_KEY'] = SECRET_KEY
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+PAGINATION_NUM = 3
+
+# Make migrations:
+# export FLASK_ENV=development
+# export FLASK_APP=blog.py
+# flask db migrate -m 'message'
+# flask db upgrade
+
+
+# many to many relationship
+# post_tags = db.Table('post_tags',
+#                      db.Column('post_id', db.Integer, db.ForeignKey('posts.id')),
+#                      db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
+#                      )
+
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,9 +45,8 @@ class Posts(db.Model):
     content = db.Column(db.Text)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow())
     slug = db.Column(db.String(100))
-
-    # num_of_views = db.Column(db.Integer)
-    # tags = db.relationship('Tags', secondary=post_tag, backref='post')
+    num_of_views = db.Column(db.Integer, default=0)
+    # tags = db.relationship('Tags', secondary=post_tags, backref=db.backref('posts', lazy='dynamic'))
 
     def __repr__(self):
         return f'Post {self.title}'
@@ -40,11 +54,11 @@ class Posts(db.Model):
 #
 # class Tags(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     tag = db.Column(db.String(50))
+#     tag_name = db.Column(db.String(50))
 #     posts_ids = db.Column(db.Integer, db.ForeignKey('posts.id'))
 #
 #     def __repr__(self):
-#         return f'Post {self.tag}'
+#         return f'Tag {self.id} - {self.tag_name}'
 
 
 @app.route("/brick")
@@ -71,7 +85,7 @@ def add_post():
         db.session.commit()
         # return a message
         flash('Post submitted successfully!')
-        return redirect(url_for('single_post', id=post.id))
+        return redirect(url_for('add_post', id=post.id))
     # redirect to the page
     return render_template('add_post.html', form=form)
 
@@ -118,11 +132,19 @@ def edit_post(id):
     return render_template('edit_post.html', form=form)
 
 
-@app.route('/posts.html')
+@app.route('/posts')
 def get_posts():
     # grab all the posts from the database
-    posts = Posts.query.order_by(Posts.date_posted)
-    return render_template('posts.html', posts=posts)
+    posts = Posts.query
+    # adding pagination
+    page = request.args.get('page')
+    if page and page.isdigit():
+        page = int(page)
+    else:
+        page = 1
+    pages = posts.paginate(page=page, per_page=PAGINATION_NUM)
+
+    return render_template('posts.html', posts=posts, pages=pages)
 
 
 @app.route("/")
@@ -145,6 +167,9 @@ def page_not_found(error):
 @app.route("/post_<int:id>")
 def single_post(id):
     post = Posts.query.get_or_404(id)
+    # counting views
+    post.num_of_views += 1
+    db.session.commit()
     return render_template("single_post.html", post=post)
 
 

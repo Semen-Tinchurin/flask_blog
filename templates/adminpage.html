@@ -62,9 +62,9 @@
                             <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title
                                 }}</a>
                             </h4>
-                            <small><a href="tech-single.html" title="">
-                                {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</a></small>
-                            <small><a href="tech-single.html" title=""><i class="fa fa-eye"></i> 4412</a></small>
+                            <small>
+                                {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                            <small><i class="fa fa-eye"></i>{{ post.num_of_views }}</small>
                         </div><!-- end meta -->
                     </div><!-- end blog-box -->
 
