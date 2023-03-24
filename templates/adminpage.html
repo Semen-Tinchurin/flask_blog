@@ -54,6 +54,12 @@
                     <h1 align="center">ADMIN PAGE</h1>
                     <hr class="invis">
                     <h2>Total posts - {{ number_of_posts }}</h2>
+
+                    <a href="{{ url_for('add_post')}}">
+                        <button type="submit" class="btn btn-success">
+                            Add post <i class="fa fa-plus"></i></button>
+                    </a>
+
                     {% for post in posts %}
 
                     <div class="blog-box row">
@@ -65,11 +71,20 @@
                             <small>
                                 {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
                             <small><i class="fa fa-eye"></i>{{ post.num_of_views }}</small>
+
+                            <a href="{{ url_for('edit_post', id=post.id)}}">
+                                <button type="submit" class="btn btn-warning">
+                                    Edit <i class="fa fa-pencil"></i>
+                                </button>
+                            </a>
+                            <a href="{{ url_for('delete_post', id=post.id)}}">
+                                <button type="submit" class="btn btn-danger">
+                                    Delete <i class="fa fa-trash-o"></i></button>
+                            </a>
                         </div><!-- end meta -->
                     </div><!-- end blog-box -->
 
                     {% endfor %}
-
                     {% endblock %}
                     <hr class="invis">
                 </div>

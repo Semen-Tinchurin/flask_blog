@@ -65,7 +65,7 @@ class Posts(db.Model):
 
 @app.route("/brick")
 def admin():
-    posts = Posts.query.order_by(Posts.date_posted)
+    posts = Posts.query.order_by(Posts.date_posted.desc())
     number_of_posts = posts.count()
     return render_template("adminpage.html", posts=posts, number_of_posts=number_of_posts)
 
@@ -107,12 +107,12 @@ def delete_post(id):
         flash('Post deleted')
 
         posts = Posts.query.order_by(Posts.date_posted)
-        return redirect(render_template('posts.html', posts=posts))
+        return redirect(render_template('adminpage.html', posts=posts))
 
     except Exception as ex:
         flash(f'Something is wrong! Error: {ex}')
         posts = Posts.query.order_by(Posts.date_posted)
-        return redirect(render_template('posts.html', posts=posts))
+        return redirect(render_template('adminpage.html', posts=posts))
 
 
 @app.route('/edit_post_<int:id>', methods=['GET', 'POST'])

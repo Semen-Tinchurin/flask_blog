@@ -19,7 +19,7 @@
     <div class="blog-meta big-meta col-md-8">
         <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title }}</a>
         </h4>
-        <p>{{ post.content|safe }}</p>
+        <p>{{ post.content|truncate(200, True)|safe }}</p>
         <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html"
                                      title="">Technology</a></small>
         <small><a href="tech-single.html" title="">
