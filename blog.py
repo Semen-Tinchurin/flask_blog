@@ -24,6 +24,8 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 PAGINATION_NUM = 3
+NUMBER_OF_LATEST = 3
+NUMBER_OF_POPULAR = 3
 
 # Make migrations:
 # export FLASK_ENV=development
@@ -143,13 +145,20 @@ def get_posts():
     else:
         page = 1
     pages = posts.paginate(page=page, per_page=PAGINATION_NUM)
-
-    return render_template('posts.html', posts=posts, pages=pages)
+    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
+    return render_template('posts.html',
+                           posts=posts,
+                           pages=pages,
+                           popular_posts=popular_posts)
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
+    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
+    return render_template("index.html",
+                           posts=posts,
+                           popular_posts=popular_posts)
 
 
 @app.errorhandler(500)
@@ -167,10 +176,13 @@ def page_not_found(error):
 @app.route("/post_<int:id>")
 def single_post(id):
     post = Posts.query.get_or_404(id)
+    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
     # counting views
     post.num_of_views += 1
     db.session.commit()
-    return render_template("single_post.html", post=post)
+    return render_template("single_post.html",
+                           post=post,
+                           popular_posts=popular_posts)
 
 
 @app.route("/useful_stuff")

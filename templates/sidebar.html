@@ -1,120 +1,102 @@
 <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-                    <div class="sidebar">
+    <div class="sidebar">
 
-                        <hr class="invis">
+        <hr class="invis">
 
-                        <div class="widget">
-                            <h2 class="widget-title">Tags</h2>
-                            <div class="blog-list-widget">
-                                <div class="list-group list-group-item list-group-item-action flex-column align-items-start">
-                                    <!-- Tags Start -->
-                                    <!-- https://www.free-css.com/free-css-templates/page281/biznews -->
-                                    <div class="d-flex flex-wrap m-n1">
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Python</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">SQL</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">TCP/IP</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Algorithms</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">HTML</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Linux</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Django</a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Flask</a>
-                                    </div>
-                                    <!-- Tags End -->
-                                </div>
-                            </div><!-- end blog-list -->
-                        </div><!-- end widget -->
+        <div class="widget">
+            <h2 class="widget-title">Tags</h2>
+            <div class="blog-list-widget">
+                <div class="list-group list-group-item list-group-item-action flex-column align-items-start">
+                    <!-- Tags Start -->
+                    <!-- https://www.free-css.com/free-css-templates/page281/biznews -->
+                    <div class="d-flex flex-wrap m-n1">
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Python</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">SQL</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">TCP/IP</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Algorithms</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">HTML</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Linux</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Django</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Flask</a>
+                    </div>
+                    <!-- Tags End -->
+                </div>
+            </div><!-- end blog-list -->
+        </div><!-- end widget -->
 
-                        <div class="widget">
-                            <h2 class="widget-title">Popular Posts</h2>
-                            <div class="blog-list-widget">
-                                <div class="list-group">
-                                    <a href="tech-single.html"
-                                       class="list-group-item list-group-item-action flex-column align-items-start">
-                                        <div class="w-100 justify-content-between">
-                                            <img src="static/upload/tech_blog_08.jpg" alt=""
-                                                 class="img-fluid float-left">
-                                            <h5 class="mb-1">5 Beautiful buildings you need..</h5>
-                                            <small>12 Jan, 2016</small>
-                                        </div>
-                                    </a>
+        <div class="widget">
+            <h2 class="widget-title">Popular Posts</h2>
+            <div class="blog-list-widget">
+                <div class="list-group">
+                    {% for popular in popular_posts %}
+                    <a href="{{ url_for('single_post', id=popular.id)}}"
+                       class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="w-100 justify-content-between">
+                            <img src="static/upload/tech_blog_08.jpg" alt=""
+                                 class="img-fluid float-left">
+                            <h5 class="mb-1">{{ popular.title }}</h5>
+                            <small>{{ popular.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div><!-- end blog-list -->
+        </div><!-- end widget -->
 
-                                    <a href="tech-single.html"
-                                       class="list-group-item list-group-item-action flex-column align-items-start">
-                                        <div class="w-100 justify-content-between">
-                                            <img src="static/upload/tech_blog_01.jpg" alt=""
-                                                 class="img-fluid float-left">
-                                            <h5 class="mb-1">Let's make an introduction for..</h5>
-                                            <small>11 Jan, 2016</small>
-                                        </div>
-                                    </a>
-
-                                    <a href="tech-single.html"
-                                       class="list-group-item list-group-item-action flex-column align-items-start">
-                                        <div class="w-100 last-item justify-content-between">
-                                            <img src="static/upload/tech_blog_03.jpg" alt=""
-                                                 class="img-fluid float-left">
-                                            <h5 class="mb-1">Did you see the most beautiful..</h5>
-                                            <small>07 Jan, 2016</small>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div><!-- end blog-list -->
-                        </div><!-- end widget -->
-
-                        <div class="widget">
-                            <h2 class="widget-title">Recent Reviews</h2>
-                            <div class="blog-list-widget">
-                                <div class="list-group">
-                                    <a href="tech-single.html"
-                                       class="list-group-item list-group-item-action flex-column align-items-start">
-                                        <div class="w-100 justify-content-between">
-                                            <img src="static/upload/tech_blog_02.jpg" alt=""
-                                                 class="img-fluid float-left">
-                                            <h5 class="mb-1">Banana-chip chocolate cake recipe..</h5>
-                                            <span class="rating">
+        <div class="widget">
+            <h2 class="widget-title">Recent Reviews</h2>
+            <div class="blog-list-widget">
+                <div class="list-group">
+                    <a href="tech-single.html"
+                       class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="w-100 justify-content-between">
+                            <img src="static/upload/tech_blog_02.jpg" alt=""
+                                 class="img-fluid float-left">
+                            <h5 class="mb-1">Banana-chip chocolate cake recipe..</h5>
+                            <span class="rating">
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                 </span>
-                                        </div>
-                                    </a>
+                        </div>
+                    </a>
 
-                                    <a href="tech-single.html"
-                                       class="list-group-item list-group-item-action flex-column align-items-start">
-                                        <div class="w-100 justify-content-between">
-                                            <img src="static/upload/tech_blog_03.jpg" alt=""
-                                                 class="img-fluid float-left">
-                                            <h5 class="mb-1">10 practical ways to choose organic..</h5>
-                                            <span class="rating">
+                    <a href="tech-single.html"
+                       class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="w-100 justify-content-between">
+                            <img src="static/upload/tech_blog_03.jpg" alt=""
+                                 class="img-fluid float-left">
+                            <h5 class="mb-1">10 practical ways to choose organic..</h5>
+                            <span class="rating">
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                 </span>
-                                        </div>
-                                    </a>
+                        </div>
+                    </a>
 
-                                    <a href="tech-single.html"
-                                       class="list-group-item list-group-item-action flex-column align-items-start">
-                                        <div class="w-100 last-item justify-content-between">
-                                            <img src="static/upload/tech_blog_07.jpg" alt=""
-                                                 class="img-fluid float-left">
-                                            <h5 class="mb-1">We are making homemade ravioli..</h5>
-                                            <span class="rating">
+                    <a href="tech-single.html"
+                       class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="w-100 last-item justify-content-between">
+                            <img src="static/upload/tech_blog_07.jpg" alt=""
+                                 class="img-fluid float-left">
+                            <h5 class="mb-1">We are making homemade ravioli..</h5>
+                            <span class="rating">
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                 </span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div><!-- end blog-list -->
-                        </div><!-- end widget -->
+                        </div>
+                    </a>
+                </div>
+            </div><!-- end blog-list -->
+        </div><!-- end widget -->
 
-                    </div><!-- end sidebar -->
-                </div><!-- end col -->
+    </div><!-- end sidebar -->
+</div><!-- end col -->
