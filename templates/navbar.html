@@ -6,7 +6,8 @@
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="static/images/version/logo_black.png" alt="" width="200" height="50"></a>
+            <a class="navbar-brand" href="{{ url_for('index') }}"><img src="static/images/version/logo_black.png" alt=""
+                                                                       width="200" height="50"></a>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
 
@@ -30,7 +31,7 @@
                         <a class="nav-link" href="{{ url_for('contacts') }}">Contact Us</a>
                     </li>
 
-                     <li class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down">
+                    <li class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">Resources</a>
                         <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
@@ -54,7 +55,10 @@
                 </ul>
 
                 <ul class="navbar-nav mr-2">
-                    Searchbox here
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+                    </form>
                 </ul>
             </div>
         </nav>

@@ -139,7 +139,7 @@ select,
 textarea {
   font-family: sans-serif;
   font-size: 100%;
-  line-height: 1.15;
+  line-height: 29px;
   margin: 0;
 }
 
@@ -2569,6 +2569,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
   .form-inline .form-control {
     display: inline-block;
     width: auto;
+    height: 29.1px;
     vertical-align: middle;
   }
   .form-inline .form-control-static {
