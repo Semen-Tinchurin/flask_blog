@@ -5,7 +5,7 @@ from flask_ckeditor import CKEditor
 from flask_login import UserMixin, \
     login_user, LoginManager, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from webforms import PostForm
+from webforms import PostForm, SearchForm
 from datetime import datetime
 from configs import *
 
@@ -26,6 +26,7 @@ migrate = Migrate(app, db)
 PAGINATION_NUM = 3
 NUMBER_OF_LATEST = 3
 NUMBER_OF_POPULAR = 3
+
 
 # Make migrations:
 # export FLASK_ENV=development
@@ -48,10 +49,12 @@ class Posts(db.Model):
     date_posted = db.Column(db.DateTime, default=datetime.utcnow())
     slug = db.Column(db.String(100))
     num_of_views = db.Column(db.Integer, default=0)
+
     # tags = db.relationship('Tags', secondary=post_tags, backref=db.backref('posts', lazy='dynamic'))
 
     def __repr__(self):
         return f'Post {self.title}'
+
 
 #
 # class Tags(db.Model):
@@ -183,6 +186,30 @@ def single_post(id):
     return render_template("single_post.html",
                            post=post,
                            popular_posts=popular_posts)
+
+
+# pass stuff to navbar
+@app.context_processor
+def base():
+    form = SearchForm()
+    return dict(form=form)
+
+
+# search function
+@app.route('/search', methods=['POST'])
+def search():
+    form = SearchForm()
+    posts = Posts.query
+    if form.validate_on_submit():
+        # get data from submitted form
+        searched = form.searched.data
+        # query the database
+        posts = posts.filter(Posts.content.like('%' + searched + '%'))
+        posts = posts.order_by(Posts.date_posted.desc()).all()
+        return render_template('search.html',
+                               form=form,
+                               searched=searched,
+                               posts=posts)
 
 
 @app.route("/useful_stuff")

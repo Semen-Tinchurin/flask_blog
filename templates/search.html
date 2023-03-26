@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+
+
+<div class="page-wrapper">
+    <div class="blog-list clearfix">
+        <hr class="invis">
+
+        {% if posts %}
+        <h1 align="center">Search results for: <em>{{ searched }}</em></h1>
+        {% for post in posts %}
+        <hr class="invis">
+
+        <div class="blog-box row">
+            <div class="col-md-4">
+                <div class="post-media">
+                    <a href="tech-single.html" title="">
+                        <img src="static/images/coding.jpg" alt="" class="img-fluid">
+                        <div class="hovereffect"></div>
+                    </a>
+                </div><!-- end media -->
+            </div><!-- end col -->
+
+            <div class="blog-meta big-meta col-md-8">
+                <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title }}</a>
+                </h4>
+                <p>{{ post.content|truncate(200, True)|safe }}</p>
+                <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html"
+                                             title="">Technology</a></small>
+                <small><a href="tech-single.html" title="">
+                    {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</a></small>
+                <small><a href="tech-author.html" title="">by Admin</a></small>
+                <small><a href="tech-single.html" title=""><i class="fa fa-eye"></i>{{ post.num_of_views }}</a></small>
+            </div><!-- end meta -->
+        </div><!-- end blog-box -->
+
+
+        {% endfor %}
+        {% else %}
+        <h3>No results for: {{ searched }}</h3>
+        {% endif %}
+        <hr class="invis">
+
+    </div><!-- end blog-list -->
+</div><!-- end page-wrapper -->
+
+{% endblock %}

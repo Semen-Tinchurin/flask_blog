@@ -17,6 +17,10 @@ class PostForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class SearchForm(FlaskForm):
+    searched = StringField('Searched', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 # class UserForm(FlaskForm):
 #     user_name = StringField('Enter name', validators=[DataRequired()])
 #     user_email = StringField('Enter email', validators=[DataRequired()])
