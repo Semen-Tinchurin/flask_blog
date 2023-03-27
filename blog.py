@@ -9,6 +9,10 @@ from webforms import PostForm, SearchForm
 from datetime import datetime
 from configs import *
 
+#
+# TODO logging
+# TODO async functions
+
 # https://codepen.io/ig_design/pen/omQXoQ
 # https://support.sendwithus.com/jinja/jinja_time/
 # https://www.free-css.com/free-css-templates/page244/tech-blog
@@ -206,10 +210,12 @@ def search():
         # query the database
         posts = posts.filter(Posts.content.like('%' + searched + '%'))
         posts = posts.order_by(Posts.date_posted.desc()).all()
+        popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
         return render_template('search.html',
                                form=form,
                                searched=searched,
-                               posts=posts)
+                               posts=posts,
+                               popular_posts=popular_posts)
 
 
 @app.route("/useful_stuff")

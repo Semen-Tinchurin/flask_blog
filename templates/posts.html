@@ -3,9 +3,10 @@
 {% block content %}
 {{ super() }}
 <h1 align="center">All Posts</h1>
-{% for post in pages.items %}
+
 <hr class="invis">
 
+{% for post in pages.items %}
 <div class="blog-box row">
     <div class="col-md-4">
         <div class="post-media">
@@ -29,10 +30,9 @@
     </div><!-- end meta -->
 </div><!-- end blog-box -->
 
+<hr class="invis">
 
 {% endfor %}
-
-<hr class="invis">
 
 <!-- pagination -->
 <div class="row">

@@ -59,32 +59,38 @@
                         <button type="submit" class="btn btn-success">
                             Add post <i class="fa fa-plus"></i></button>
                     </a>
-
-                    {% for post in posts %}
-
-                    <div class="blog-box row">
-
-                        <div class="blog-meta big-meta col-md-8">
-                            <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title
-                                }}</a>
-                            </h4>
-                            <small>
-                                {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
-                            <small><i class="fa fa-eye"></i>{{ post.num_of_views }}</small>
-
-                            <a href="{{ url_for('edit_post', id=post.id)}}">
+                    <hr class="invis">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Date posted</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <th scope="row">{{ post.id }}</th>
+                            <td><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">
+                                {{ post.title }}</a></td>
+                            <td>{{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</td>
+                            <td><a href="{{ url_for('edit_post', id=post.id)}}">
                                 <button type="submit" class="btn btn-warning">
                                     Edit <i class="fa fa-pencil"></i>
                                 </button>
                             </a>
-                            <a href="{{ url_for('delete_post', id=post.id)}}">
-                                <button type="submit" class="btn btn-danger">
-                                    Delete <i class="fa fa-trash-o"></i></button>
-                            </a>
-                        </div><!-- end meta -->
-                    </div><!-- end blog-box -->
+                                <a href="{{ url_for('delete_post', id=post.id)}}">
+                                    <button type="submit" class="btn btn-danger">
+                                        Delete <i class="fa fa-trash-o"></i></button>
+                                </a></td>
+                        </tr>
+                        {% endfor %}
 
-                    {% endfor %}
+                        </tbody>
+                    </table>
+
                     {% endblock %}
                     <hr class="invis">
                 </div>
