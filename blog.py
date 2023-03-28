@@ -12,6 +12,9 @@ from configs import *
 #
 # TODO logging
 # TODO async functions
+# TODO static like this:
+# href="{{url_for('static', filename='css/bootstrap.css')}}" rel="stylesheet"
+# <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
 
 # https://codepen.io/ig_design/pen/omQXoQ
 # https://support.sendwithus.com/jinja/jinja_time/
@@ -94,7 +97,7 @@ def add_post():
         db.session.commit()
         # return a message
         flash('Post submitted successfully!')
-        return redirect(url_for('add_post', id=post.id))
+        return redirect(url_for('admin'))
     # redirect to the page
     return render_template('add_post.html', form=form)
 
@@ -104,22 +107,19 @@ def contacts():
     return render_template("contacts.html")
 
 
-@app.route('/delete_<int:id>')
+@app.route('/delete_<int:id>', methods=['GET', 'POST'])
 def delete_post(id):
     post_to_delete = Posts.query.get_or_404(id)
     try:
         db.session.delete(post_to_delete)
         db.session.commit()
-
         flash('Post deleted')
-
-        posts = Posts.query.order_by(Posts.date_posted)
-        return redirect(render_template('adminpage.html', posts=posts))
 
     except Exception as ex:
         flash(f'Something is wrong! Error: {ex}')
-        posts = Posts.query.order_by(Posts.date_posted)
-        return redirect(render_template('adminpage.html', posts=posts))
+
+    finally:
+        return redirect(url_for('admin'))
 
 
 @app.route('/edit_post_<int:id>', methods=['GET', 'POST'])
@@ -134,7 +134,7 @@ def edit_post(id):
         db.session.add(post)
         db.session.commit()
         flash("Post has been updated")
-        return redirect(url_for('single_post', id=post.id))
+        return redirect(url_for('admin'))
     form.title.data = post.title
     form.content.data = post.content
     form.slug.data = post.slug
@@ -180,7 +180,7 @@ def page_not_found(error):
 
 
 # page for single post
-@app.route("/post_<int:id>")
+@app.route("/post/<int:id>")
 def single_post(id):
     post = Posts.query.get_or_404(id)
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)

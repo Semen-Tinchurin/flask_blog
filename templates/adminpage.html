@@ -53,6 +53,16 @@
                     <hr class="invis">
                     <h1 align="center">ADMIN PAGE</h1>
                     <hr class="invis">
+
+                    {% for msg in get_flashed_messages() %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{msg}}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+
                     <h2>Total posts - {{ number_of_posts }}</h2>
 
                     <a href="{{ url_for('add_post')}}">
@@ -66,6 +76,8 @@
                             <th scope="col">ID</th>
                             <th scope="col">Title</th>
                             <th scope="col">Date posted</th>
+                            <th scope="col">Views</th>
+                            <th scope="col">Slug</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
@@ -76,13 +88,16 @@
                             <td><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">
                                 {{ post.title }}</a></td>
                             <td>{{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</td>
+                            <td>{{ post.num_of_views }}</td>
+                            <td>{{ post.slug }}</td>
                             <td><a href="{{ url_for('edit_post', id=post.id)}}">
                                 <button type="submit" class="btn btn-warning">
                                     Edit <i class="fa fa-pencil"></i>
                                 </button>
                             </a>
                                 <a href="{{ url_for('delete_post', id=post.id)}}">
-                                    <button type="submit" class="btn btn-danger">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you shure to delete?')">
                                         Delete <i class="fa fa-trash-o"></i></button>
                                 </a></td>
                         </tr>
