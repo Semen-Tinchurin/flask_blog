@@ -78,6 +78,7 @@
                             <th scope="col">Date posted</th>
                             <th scope="col">Views</th>
                             <th scope="col">Slug</th>
+                            <th scope="col">Tags</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
@@ -87,9 +88,10 @@
                             <th scope="row">{{ post.id }}</th>
                             <td><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">
                                 {{ post.title }}</a></td>
-                            <td>{{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</td>
+                            <td>{{ post.date_posted.strftime('%d.%m.%y') }}</td>
                             <td>{{ post.num_of_views }}</td>
                             <td>{{ post.slug }}</td>
+                            <td>Tags</td>
                             <td><a href="{{ url_for('edit_post', id=post.id)}}">
                                 <button type="submit" class="btn btn-warning">
                                     Edit <i class="fa fa-pencil"></i>
@@ -105,6 +107,26 @@
 
                         </tbody>
                     </table>
+
+                    <h2>Tags - num_of_tags</h2>
+
+                    <a href="#">
+                        <button type="submit" class="btn btn-success">
+                            Add tag <i class="fa fa-plus"></i></button>
+                    </a>
+
+                    <hr class="invis">
+
+                    <div class="d-flex flex-wrap m-n1">
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Python</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">SQL</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">TCP/IP</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Algorithms</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">HTML</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Linux</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Django</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Flask</a>
+                    </div>
 
                     {% endblock %}
                     <hr class="invis">

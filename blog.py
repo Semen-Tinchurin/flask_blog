@@ -12,9 +12,7 @@ from configs import *
 #
 # TODO logging
 # TODO async functions
-# TODO static like this:
-# href="{{url_for('static', filename='css/bootstrap.css')}}" rel="stylesheet"
-# <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+# TODO checking if admin
 
 # https://codepen.io/ig_design/pen/omQXoQ
 # https://support.sendwithus.com/jinja/jinja_time/
@@ -180,7 +178,7 @@ def page_not_found(error):
 
 
 # page for single post
-@app.route("/post/<int:id>")
+@app.route("/posts/<int:id>")
 def single_post(id):
     post = Posts.query.get_or_404(id)
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
