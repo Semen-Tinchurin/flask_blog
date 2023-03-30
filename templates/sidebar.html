@@ -29,7 +29,7 @@
             <div class="blog-list-widget">
                 <div class="list-group">
                     {% for popular in popular_posts %}
-                    <a href="{{ url_for('single_post', id=popular.id)}}"
+                    <a href="{{ url_for('single_post', slug=popular.slug)}}"
                        class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="w-100 justify-content-between">
                             <img src="static/upload/tech_blog_08.jpg" alt=""

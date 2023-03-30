@@ -187,9 +187,9 @@ def page_not_found(error):
 
 
 # page for single post
-@app.route("/posts/<int:id>")
-def single_post(id):
-    post = Posts.query.get_or_404(id)
+@app.route("/posts/<slug>")
+def single_post(slug):
+    post = Posts.query.filter_by(slug=slug).first()
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
     # counting views
     post.num_of_views += 1
