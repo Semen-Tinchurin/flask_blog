@@ -21,8 +21,9 @@
         <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title }}</a>
         </h4>
         <p>{{ post.content|truncate(200, True)|safe }}</p>
-        <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html"
-                                     title="">Technology</a></small>
+        <small class="firstsmall">
+            <a class="bg-orange" href="#" title="">Tags here</a>
+        </small>
         <small><a href="tech-single.html" title="">
             {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</a></small>
         <small><a href="tech-author.html" title="">by Admin</a></small>

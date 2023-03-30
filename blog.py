@@ -13,6 +13,7 @@ from configs import *
 # TODO logging
 # TODO async functions
 # TODO checking if admin
+# TODO fix links in posts and sidebar
 
 # https://codepen.io/ig_design/pen/omQXoQ
 # https://support.sendwithus.com/jinja/jinja_time/
@@ -20,7 +21,9 @@ from configs import *
 # "https://www.digitalocean.com/community/tutorials/how-to-use-many-to-many-database-relationships-with-flask-sqlalchemy"
 
 app = Flask(__name__)
+
 ckeditor = CKEditor(app)
+app.config['CKEDITOR_ENABLE_CODESNIPPET'] = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -42,8 +45,8 @@ NUMBER_OF_POPULAR = 3
 
 # many to many relationship
 # post_tags = db.Table('post_tags',
-#                      db.Column('post_id', db.Integer, db.ForeignKey('posts.id')),
-#                      db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
+#                      db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True)
+#                      db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
 #                      )
 
 
@@ -55,7 +58,10 @@ class Posts(db.Model):
     slug = db.Column(db.String(100))
     num_of_views = db.Column(db.Integer, default=0)
 
-    # tags = db.relationship('Tags', secondary=post_tags, backref=db.backref('posts', lazy='dynamic'))
+    # tags = db.relationship('Tags',
+    #                        secondary=post_tags,
+    #                        lazy='subquery',
+    #                        backref=db.backref('posts', lazy=True))
 
     def __repr__(self):
         return f'Post {self.title}'
@@ -65,7 +71,6 @@ class Posts(db.Model):
 # class Tags(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
 #     tag_name = db.Column(db.String(50))
-#     posts_ids = db.Column(db.Integer, db.ForeignKey('posts.id'))
 #
 #     def __repr__(self):
 #         return f'Tag {self.id} - {self.tag_name}'
@@ -214,6 +219,8 @@ def search():
                                searched=searched,
                                posts=posts,
                                popular_posts=popular_posts)
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route("/useful_stuff")
