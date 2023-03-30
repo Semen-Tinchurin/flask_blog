@@ -14,6 +14,7 @@ from configs import *
 # TODO async functions
 # TODO checking if admin
 # TODO fix links in posts and sidebar
+# TODO cache navbar and footer
 
 # https://codepen.io/ig_design/pen/omQXoQ
 # https://support.sendwithus.com/jinja/jinja_time/
@@ -22,8 +23,11 @@ from configs import *
 
 app = Flask(__name__)
 
-ckeditor = CKEditor(app)
+app.config['CKEDITOR_SERVE_LOCAL'] = True
 app.config['CKEDITOR_ENABLE_CODESNIPPET'] = True
+app.config['CKEDITOR_CODE_THEME'] = 'monokai'
+app.config['CKEDITOR_PKG_TYPE'] = 'full'
+ckeditor = CKEditor(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
 app.config['SECRET_KEY'] = SECRET_KEY
