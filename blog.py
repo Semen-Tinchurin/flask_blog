@@ -2,24 +2,26 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_ckeditor import CKEditor
-from flask_login import UserMixin, \
-    login_user, LoginManager, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from webforms import PostForm, SearchForm
+from flask_login import LoginManager, login_required, logout_user, current_user
+from webforms import PostForm, SearchForm, LoginForm
 from datetime import datetime
 from configs import *
 
-#
+# TODO image field for post model
+# TODO fix links in posts and sidebar
+# TODO checking if admin
+# TODO cache navbar and footer
 # TODO logging
 # TODO async functions
-# TODO checking if admin
-# TODO fix links in posts and sidebar
-# TODO cache navbar and footer
 
 # https://codepen.io/ig_design/pen/omQXoQ
 # https://support.sendwithus.com/jinja/jinja_time/
 # https://www.free-css.com/free-css-templates/page244/tech-blog
 # "https://www.digitalocean.com/community/tutorials/how-to-use-many-to-many-database-relationships-with-flask-sqlalchemy"
+
+PAGINATION_NUM = 3
+NUMBER_OF_LATEST = 3
+NUMBER_OF_POPULAR = 3
 
 app = Flask(__name__)
 
@@ -34,10 +36,6 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-PAGINATION_NUM = 3
-NUMBER_OF_LATEST = 3
-NUMBER_OF_POPULAR = 3
 
 
 # Make migrations:
@@ -178,6 +176,18 @@ def index():
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template('500.html', title="INTERNAL SERVER ERROR"), 500
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.login.data == ADMIN_LOG and form.password.data == ADMIN_PASS:
+            flash('You are logged in as Admin')
+            return redirect(url_for('admin'))
+    form.login.data = ''
+    form.password.data = ''
+    return render_template('login.html', form=form)
 
 
 # Custom 404 error page

@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from flask_wtf.file import FileAllowed
+from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
 from wtforms.widgets import TextArea
 from flask_ckeditor import CKEditorField
@@ -8,10 +9,8 @@ from flask_ckeditor import CKEditorField
 # create post form
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    # content = StringField('Content',
-    #                       validators=[DataRequired()],
-    #                       widget=TextArea())
     content = CKEditorField('Content', validators=[DataRequired()])
+    # picture = FileField('Upload picture', validators=[FileAllowed(['jpg', 'png'])])
     slug = StringField('Slug', validators=[DataRequired()])
     # tags =
     submit = SubmitField('Submit')
@@ -20,6 +19,12 @@ class PostForm(FlaskForm):
 class SearchForm(FlaskForm):
     searched = StringField('Searched', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+class LoginForm(FlaskForm):
+    login = StringField('Login', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Log in')
 
 # class UserForm(FlaskForm):
 #     user_name = StringField('Enter name', validators=[DataRequired()])

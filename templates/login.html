@@ -1,38 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<hr class="invis">
 {% for msg in get_flashed_messages() %}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>{{msg}}</strong>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <strong>{{msg}}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 {% endfor %}
 
-{% if email %}
-<h1>Email: {{ email }}</h1>
-<h1>Password: {{ password }}</h1>
-<h1>Founded this: {{ pw_to_check.name }} - {{ pw_to_check.email }} - {{ pw_to_check.password_hash }}</h1>
-<br/>
-Passed: {{ passed }}
-{% else %}
-<h1>Whats your email and password?</h1>
-<br/>
 <form method="POST">
     {{ form.hidden_tag() }}
-    {{ form.email.label(class="form-label") }}
-    {{ form.email(class="form-control") }}
+    {{ form.login.label(class="form-label") }}
+    {{ form.login(class="form-control") }}
     <br/>
-    {{ form.password_hash.label(class="form-label") }}
-    {{ form.password_hash(class="form-control") }}
+    {{ form.password.label(class="form-label") }}
+    {{ form.password(class="form-control") }}
     <br/>
-    {{ form.submit(class="btn btn-dark") }}
+    {{ form.submit(class="btn btn-outline-success") }}
     <br/>
     <br/>
 </form>
-
-{% endif %}
 
 {% endblock %}
