@@ -21,6 +21,11 @@ class SearchForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class TagForm(FlaskForm):
+    tag = StringField('Tag', validators=[DataRequired()])
+    submit = SubmitField('Add tag')
+
+
 class LoginForm(FlaskForm):
     login = StringField('Login', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])

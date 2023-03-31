@@ -10,14 +10,9 @@
                     <!-- Tags Start -->
                     <!-- https://www.free-css.com/free-css-templates/page281/biznews -->
                     <div class="d-flex flex-wrap m-n1">
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Python</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">SQL</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">TCP/IP</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Algorithms</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">HTML</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Linux</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Django</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Flask</a>
+                        {% for tag in tags %}
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">{{ tag.tag_name }}</a>
+                        {% endfor %}
                     </div>
                     <!-- Tags End -->
                 </div>

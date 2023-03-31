@@ -107,24 +107,22 @@
 
                         </tbody>
                     </table>
-                    <h2>Tags - num_of_tags</h2>
+                    <h2>Tags - {{ number_of_tags }}</h2>
 
-                    <a href="#">
-                        <button type="submit" class="btn btn-success">
-                            Add tag <i class="fa fa-plus"></i></button>
-                    </a>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        {{ form.tag.label(class="form-label") }}
+                        {{ form.tag(class="form-control") }}
+                        <br/>
+                        {{ form.submit(class="btn btn-success") }}
+                    </form>
 
                     <hr class="invis">
 
                     <div class="d-flex flex-wrap m-n1">
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Python</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">SQL</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">TCP/IP</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Algorithms</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">HTML</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Linux</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Django</a>
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">Flask</a>
+                        {% for tag in tags %}
+                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">{{ tag.tag_name }}</a>
+                        {% endfor %}
                     </div>
 
                     {% endblock %}

@@ -1,9 +1,11 @@
+import random
+
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_ckeditor import CKEditor
 from flask_login import LoginManager, login_required, logout_user, current_user
-from webforms import PostForm, SearchForm, LoginForm
+from webforms import PostForm, SearchForm, LoginForm, TagForm
 from datetime import datetime
 from configs import *
 
@@ -37,7 +39,6 @@ app.config['SECRET_KEY'] = SECRET_KEY
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
 # Make migrations:
 # export FLASK_ENV=development
 # export FLASK_APP=blog.py
@@ -46,10 +47,10 @@ migrate = Migrate(app, db)
 
 
 # many to many relationship
-# post_tags = db.Table('post_tags',
-#                      db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True)
-#                      db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
-#                      )
+post_tags = db.Table('post_tags',
+                     db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
+                     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
+                     )
 
 
 class Posts(db.Model):
@@ -60,29 +61,44 @@ class Posts(db.Model):
     slug = db.Column(db.String(100))
     num_of_views = db.Column(db.Integer, default=0)
 
-    # tags = db.relationship('Tags',
-    #                        secondary=post_tags,
-    #                        lazy='subquery',
-    #                        backref=db.backref('posts', lazy=True))
+    tags = db.relationship('Tags',
+                           secondary=post_tags,
+                           lazy='subquery',
+                           backref=db.backref('posts', lazy=True))
 
     def __repr__(self):
         return f'Post {self.title}'
 
 
 #
-# class Tags(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     tag_name = db.Column(db.String(50))
-#
-#     def __repr__(self):
-#         return f'Tag {self.id} - {self.tag_name}'
+class Tags(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tag_name = db.Column(db.String(50))
+
+    def __repr__(self):
+        return f'Tag {self.id} - {self.tag_name}'
 
 
-@app.route("/brick")
+@app.route("/brick", methods=['GET', 'POST'])
 def admin():
     posts = Posts.query.order_by(Posts.date_posted.desc())
     number_of_posts = posts.count()
-    return render_template("adminpage.html", posts=posts, number_of_posts=number_of_posts)
+    tags = Tags.query.order_by(Tags.id)
+    number_of_tags = tags.count()
+    form = TagForm()
+    if form.validate_on_submit():
+        tag = Tags(tag_name=form.tag.data)
+        form.tag.data = ''
+        db.session.add(tag)
+        db.session.commit()
+        flash('Tag added!')
+        return redirect(url_for('admin'))
+    return render_template("adminpage.html",
+                           posts=posts,
+                           number_of_posts=number_of_posts,
+                           tags=tags,
+                           number_of_tags=number_of_tags,
+                           form=form)
 
 
 # add post page
@@ -150,6 +166,7 @@ def edit_post(id):
 def get_posts():
     # grab all the posts from the database
     posts = Posts.query
+    tags = Tags.query.all()
     # adding pagination
     page = request.args.get('page')
     if page and page.isdigit():
@@ -161,16 +178,19 @@ def get_posts():
     return render_template('posts.html',
                            posts=posts,
                            pages=pages,
-                           popular_posts=popular_posts)
+                           popular_posts=popular_posts,
+                           tags=tags)
 
 
 @app.route("/")
 def index():
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
+    tags = Tags.query.all()
     return render_template("index.html",
                            posts=posts,
-                           popular_posts=popular_posts)
+                           popular_posts=popular_posts,
+                           tags=tags)
 
 
 @app.errorhandler(500)
@@ -201,12 +221,14 @@ def page_not_found(error):
 def single_post(slug):
     post = Posts.query.filter_by(slug=slug).first()
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
+    tags = Tags.query.all()
     # counting views
     post.num_of_views += 1
     db.session.commit()
     return render_template("single_post.html",
                            post=post,
-                           popular_posts=popular_posts)
+                           popular_posts=popular_posts,
+                           tags=tags)
 
 
 # pass stuff to navbar
@@ -221,6 +243,7 @@ def base():
 def search():
     form = SearchForm()
     posts = Posts.query
+    tags = Tags.query.all()
     if form.validate_on_submit():
         # get data from submitted form
         searched = form.searched.data
@@ -232,7 +255,8 @@ def search():
                                form=form,
                                searched=searched,
                                posts=posts,
-                               popular_posts=popular_posts)
+                               popular_posts=popular_posts,
+                               tags=tags)
     else:
         return redirect(url_for('index'))
 
