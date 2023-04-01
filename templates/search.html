@@ -24,7 +24,7 @@
             </div><!-- end col -->
 
             <div class="blog-meta big-meta col-md-8">
-                <h4><a href="{{ url_for('single_post', id=post.id)}}" title="{{ post.title }}">{{ post.title }}</a>
+                <h4><a href="{{ url_for('single_post', slug=post.slug)}}" title="{{ post.title }}">{{ post.title }}</a>
                 </h4>
                 <p>{{ post.content|truncate(200, True)|safe }}</p>
                 <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html"
