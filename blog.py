@@ -240,6 +240,9 @@ def page_not_found(error):
 def single_post(slug):
     # request wanted post
     post = Posts.query.filter_by(slug=slug).first()
+    # request previous and next posts
+    prev_post = Posts.query.filter(Posts.date_posted < post.date_posted).first()
+    next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
     # request popular posts for sidebar
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
     # requestin tags
@@ -253,7 +256,9 @@ def single_post(slug):
     return render_template("single_post.html",
                            post=post,
                            popular_posts=popular_posts,
-                           tags=shuffled_tags)
+                           tags=shuffled_tags,
+                           next_post=next_post,
+                           prev_post=prev_post)
 
 
 # pass stuff to navbar

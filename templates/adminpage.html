@@ -88,7 +88,7 @@
                             <th scope="row">{{ post.id }}</th>
                             <td><a href="{{ url_for('single_post', slug=post.slug)}}" title="{{ post.title }}">
                                 {{ post.title }}</a></td>
-                            <td>{{ post.date_posted.strftime('%d.%m.%y') }}</td>
+                            <td>{{ post.date_posted.strftime('%d.%m.%y %H:%M') }}</td>
                             <td>{{ post.num_of_views }}</td>
                             <td>{{ post.slug }}</td>
                             <td>Tags</td>
