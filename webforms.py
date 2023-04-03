@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField, PasswordField, FileField
 from wtforms.validators import DataRequired
 from wtforms.widgets import TextArea
 from flask_ckeditor import CKEditorField
@@ -10,9 +10,9 @@ from flask_ckeditor import CKEditorField
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = CKEditorField('Content', validators=[DataRequired()])
-    # picture = FileField('Upload picture', validators=[FileAllowed(['jpg', 'png'])])
+    picture = FileField('Upload picture', validators=[FileAllowed(['jpg', 'png'])])
     slug = StringField('Slug', validators=[DataRequired()])
-    # tags =
+    tags = StringField('Tags', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 

@@ -9,6 +9,7 @@ import random
 from configs import *
 
 # TODO image field for post model
+# TODO fix time formats
 # TODO fix links in posts and sidebar
 # TODO checking if admin
 # TODO cache navbar and footer
@@ -119,6 +120,7 @@ def add_post():
         form.title.data = ''
         form.content.data = ''
         form.slug.data = ''
+        form.tags.data = ''
         # add post data to database
         db.session.add(post)
         db.session.commit()
