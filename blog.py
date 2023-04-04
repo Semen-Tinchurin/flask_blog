@@ -7,6 +7,7 @@ from webforms import PostForm, SearchForm, LoginForm, TagForm
 from datetime import datetime
 import random
 from configs import *
+from webmodels import *
 
 # TODO image field for post model
 # TODO fix time formats
@@ -38,45 +39,14 @@ ckeditor = CKEditor(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
 app.config['SECRET_KEY'] = SECRET_KEY
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
 
 # Make migrations:
 # export FLASK_ENV=development
 # export FLASK_APP=blog.py
 # flask db migrate -m 'message'
 # flask db upgrade
-
-
-# many to many relationship for Posts ang Tags models
-post_tags = db.Table('post_tags',
-                     db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
-                     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
-                     )
-
-
-class Posts(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    content = db.Column(db.Text)
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow())
-    slug = db.Column(db.String(100))
-    num_of_views = db.Column(db.Integer, default=0)
-    tags = db.relationship('Tags',
-                           secondary=post_tags,
-                           lazy='subquery',
-                           backref=db.backref('posts', lazy=True))
-
-    def __repr__(self):
-        return f'Post {self.title}'
-
-
-class Tags(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tag_name = db.Column(db.String(50))
-
-    def __repr__(self):
-        return f'Tag {self.id} - {self.tag_name}'
 
 
 @app.route("/brick", methods=['GET', 'POST'])
@@ -302,4 +272,5 @@ def useful_stuff():
 
 
 if __name__ == "__main__":
+    db.init_app(app)
     app.run(debug=True)
