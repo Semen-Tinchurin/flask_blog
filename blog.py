@@ -1,13 +1,11 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_ckeditor import CKEditor
-from flask_login import LoginManager, login_required, logout_user, current_user
 from webforms import PostForm, SearchForm, LoginForm, TagForm
-from datetime import datetime
-import random
 from configs import *
 from webmodels import *
+import logging
+from logging.handlers import RotatingFileHandler
+import random
 
 # TODO image field for post model
 # TODO fix time formats
@@ -39,8 +37,16 @@ ckeditor = CKEditor(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
 app.config['SECRET_KEY'] = SECRET_KEY
 
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
+# configuring logging
+FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+DATE_FORMAT = '%d.%m.%Y %I:%M:%S %p'
+logging.basicConfig(
+                    format=FORMAT,
+                    datefmt=DATE_FORMAT,
+                    level=logging.WARNING)
+# configure werkzeug logger
+wer_log = logging.getLogger('werkzeug')
+wer_log.setLevel(logging.ERROR)
 
 # Make migrations:
 # export FLASK_ENV=development
@@ -51,6 +57,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 @app.route("/brick", methods=['GET', 'POST'])
 def admin():
+    app.logger.info('Went on the admin page')
     # request all the posts from DB
     posts = Posts.query.order_by(Posts.date_posted.desc())
     # counting posts
@@ -69,6 +76,7 @@ def admin():
         db.session.add(tag)
         db.session.commit()
         flash('Tag added!')
+        app.logger.info(f'Tag {tag.tag_name} added')
         return redirect(url_for('admin'))
     return render_template("adminpage.html",
                            posts=posts,
@@ -81,6 +89,7 @@ def admin():
 # add post page
 @app.route("/add-post", methods=['GET', 'POST'])
 def add_post():
+    app.logger.info('Went on the add post page')
     form = PostForm()
     if form.validate_on_submit():
         post = Posts(title=form.title.data,
@@ -96,6 +105,7 @@ def add_post():
         db.session.commit()
         # return a message
         flash('Post submitted successfully!')
+        app.logger.info(f'Post {post.title} added')
         return redirect(url_for('admin'))
     # redirect to the page
     return render_template('add_post.html', form=form)
@@ -108,6 +118,7 @@ def contacts():
 
 @app.route('/delete_<int:id>', methods=['GET', 'POST'])
 def delete_post(id):
+    app.logger.info('Went on the delete page')
     # request post that we need to delete
     post_to_delete = Posts.query.get_or_404(id)
     try:
@@ -115,8 +126,10 @@ def delete_post(id):
         db.session.delete(post_to_delete)
         db.session.commit()
         flash('Post deleted')
+        app.logger.info(f'Post {post_to_delete.title} deleted')
 
     except Exception as ex:
+        app.logger.error(f'The ERROR occurred: {ex}')
         flash(f'Something is wrong! Error: {ex}')
 
     finally:
@@ -127,6 +140,7 @@ def delete_post(id):
 def edit_post(id):
     # request the post that we need to edit
     post = Posts.query.get_or_404(id)
+    app.logger.info(f'Went on the edit post {post.title} page')
     form = PostForm()
     if form.validate_on_submit():
         # passing post data from form to DB
@@ -137,6 +151,7 @@ def edit_post(id):
         db.session.add(post)
         db.session.commit()
         flash("Post has been updated")
+        app.logger.info(f'Post {post.title} was updated')
         return redirect(url_for('admin'))
     # passing post data to the form
     form.title.data = post.title
@@ -147,6 +162,7 @@ def edit_post(id):
 
 @app.route('/posts')
 def get_posts():
+    app.logger.info('Requested all posts')
     # request all the posts from DB
     posts = Posts.query
     # request all the tags from DB
@@ -171,6 +187,7 @@ def get_posts():
 
 @app.route("/")
 def index():
+    app.logger.info('Went on site')
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
     # request popular posts for sidebar
@@ -186,6 +203,7 @@ def index():
 
 @app.errorhandler(500)
 def internal_server_error(error):
+    app.logger.error('INTERNAL SERVER ERROR 500')
     return render_template('500.html', title="INTERNAL SERVER ERROR"), 500
 
 
@@ -195,6 +213,7 @@ def login():
     if form.validate_on_submit():
         if form.login.data == ADMIN_LOG and form.password.data == ADMIN_PASS:
             flash('You are logged in as Admin')
+            app.logger.info('Logged in as Admin')
             return redirect(url_for('admin'))
     form.login.data = ''
     form.password.data = ''
@@ -204,6 +223,7 @@ def login():
 # Custom 404 error page
 @app.errorhandler(404)
 def page_not_found(error):
+    app.logger.error('404 PAGE NOT FOUND')
     return render_template('404.html', title="PAGE NOT FOUND"), 404
 
 
@@ -212,6 +232,7 @@ def page_not_found(error):
 def single_post(slug):
     # request wanted post
     post = Posts.query.filter_by(slug=slug).first()
+    app.logger.info(f'Requested post - {post.title}')
     # request previous and next posts
     prev_post = Posts.query.filter(Posts.date_posted < post.date_posted).first()
     next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
@@ -251,6 +272,7 @@ def search():
     if form.validate_on_submit():
         # get data from submitted form
         searched = form.searched.data
+        app.logger.info(f'Searched for {searched}')
         # query the database
         posts = posts.filter(Posts.content.like('%' + searched + '%'))
         posts = posts.order_by(Posts.date_posted.desc()).all()
@@ -268,6 +290,7 @@ def search():
 
 @app.route("/useful_stuff")
 def useful_stuff():
+    app.logger.info('Went on the useful page')
     return render_template('useful_stuff.html')
 
 
