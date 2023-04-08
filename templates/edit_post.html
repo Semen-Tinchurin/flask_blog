@@ -18,6 +18,9 @@
         {{ form.slug.label(class="form-label") }}
         {{ form.slug(class="form-control") }}
         <br/>
+        {{ form.tags.label(class="form-label") }}
+        {{ form.tags(class="form-control") }}
+        <br/>
         {{ form.submit(class="btn btn-success", value="Save") }}
     </form>
     {{ ckeditor.load() }}
