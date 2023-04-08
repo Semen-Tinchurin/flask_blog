@@ -15,7 +15,9 @@
         <h3>{{ post.title }}</h3>
 
         <span class="color-orange">
-            <a class="bg-orange" href="#" title="">Tags here</a>
+            {% for tag in post.tags %}
+            <a class="bg-orange" href="#" title="">{{ tag.tag_name }}</a>
+            {% endfor %}
         </span>
 
         <div class="blog-meta big-meta">

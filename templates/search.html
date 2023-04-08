@@ -4,7 +4,7 @@
 {{ super() }}
 
 
-<div class="page-wrapper">
+<div class="page-wrapper" xmlns="http://www.w3.org/1999/html">
     <div class="blog-list clearfix">
         <hr class="invis">
 
@@ -27,12 +27,19 @@
                 <h4><a href="{{ url_for('single_post', slug=post.slug)}}" title="{{ post.title }}">{{ post.title }}</a>
                 </h4>
                 <p>{{ post.content|truncate(200, True)|safe }}</p>
-                <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html"
-                                             title="">Technology</a></small>
-                <small><a href="tech-single.html" title="">
-                    {{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</a></small>
-                <small><a href="tech-author.html" title="">by Admin</a></small>
-                <small><a href="tech-single.html" title=""><i class="fa fa-eye"></i>{{ post.num_of_views }}</a></small>
+
+                <small class="firstsmall">
+                    {% for tag in post.tags %}
+                    <a class="bg-orange" href="#" title="">{{ tag.tag_name }}</a>
+                    {% endfor %}
+                </small>
+
+                <div class="blog-meta big-meta">
+                    <small>{{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                    <small>by Admin</small>
+                    <small><i class="fa fa-eye"></i>{{ post.num_of_views }}</small>
+                </div>
+
             </div><!-- end meta -->
         </div><!-- end blog-box -->
         {% endfor %}
