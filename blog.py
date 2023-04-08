@@ -143,15 +143,14 @@ def edit_post(id):
     post = Posts.query.get_or_404(id)
     app.logger.info(f'Went on the edit post {post.title} page')
     form = PostForm()
-    # selected_tags = [tag.id for tag in post.tags]
-    # form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
-    # form.tags.data = selected_tags
+    selected_tags = [tag.id for tag in post.tags]
+    form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
     if form.validate_on_submit():
         # passing post data from form to DB
         post.title = form.title.data
         post.content = form.content.data
         post.slug = form.slug.data
-        # post.tags = Tags.query.filter(Tags.id.in_(form.tags.data)).all()
+        post.tags = Tags.query.filter(Tags.id.in_(form.tags.data)).all()
         # update database
         db.session.add(post)
         db.session.commit()
@@ -162,7 +161,7 @@ def edit_post(id):
     form.title.data = post.title
     form.content.data = post.content
     form.slug.data = post.slug
-    # form.tags.data = post.tags
+    form.tags.data = selected_tags
     return render_template('edit_post.html', form=form)
 
 
