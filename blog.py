@@ -7,6 +7,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 import random
 
+# TODO fix 404 errors in single_post
+# TODO fix posts in russian
 # TODO image field for post model
 # TODO fix time formats
 # TODO fix links in posts and sidebar
@@ -41,12 +43,13 @@ app.config['SECRET_KEY'] = SECRET_KEY
 FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 DATE_FORMAT = '%d.%m.%Y %I:%M:%S %p'
 logging.basicConfig(
-                    format=FORMAT,
-                    datefmt=DATE_FORMAT,
-                    level=logging.WARNING)
+    format=FORMAT,
+    datefmt=DATE_FORMAT,
+    level=logging.WARNING)
 # configure werkzeug logger
 wer_log = logging.getLogger('werkzeug')
 wer_log.setLevel(logging.ERROR)
+
 
 # Make migrations:
 # export FLASK_ENV=development
@@ -110,6 +113,13 @@ def add_post():
         return redirect(url_for('admin'))
     # redirect to the page
     return render_template('add_post.html', form=form)
+
+
+# pass stuff to navbar
+@app.context_processor
+def base():
+    form = SearchForm()
+    return dict(form=form)
 
 
 @app.route("/contacts")
@@ -259,13 +269,6 @@ def single_post(slug):
                            prev_post=prev_post)
 
 
-# pass stuff to navbar
-@app.context_processor
-def base():
-    form = SearchForm()
-    return dict(form=form)
-
-
 # search function
 @app.route('/search', methods=['POST'])
 def search():
@@ -291,6 +294,20 @@ def search():
                                tags=shuffled_tags)
     else:
         return redirect(url_for('index'))
+
+
+@app.route('/<tag>')
+def posts_by_tag(tag):
+    posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
+    # request popular posts for sidebar
+    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
+    # requestin tags
+    tags = Tags.query.all()
+    return render_template('by_tag.html',
+                           tag=tag,
+                           posts=posts,
+                           tags=tags,
+                           popular_posts=popular_posts)
 
 
 @app.route("/useful_stuff")
