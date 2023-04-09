@@ -1,5 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_ckeditor import CKEditor
+from flask_caching import Cache
 from webforms import PostForm, SearchForm, LoginForm, TagForm
 from configs import *
 from webmodels import *
@@ -27,6 +28,7 @@ NUMBER_OF_LATEST = 3
 NUMBER_OF_POPULAR = 3
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 # configuring the ckeditor
 app.config['CKEDITOR_SERVE_LOCAL'] = True
@@ -221,6 +223,7 @@ def get_posts():
 
 
 @app.route("/")
+@cache.cached(timeout=60)
 def index():
     app.logger.info('Went on site')
     # request last N posts
