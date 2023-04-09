@@ -16,7 +16,9 @@
 
         <span class="color-orange">
             {% for tag in post.tags %}
-            <a class="bg-orange" href="#" title="">{{ tag.tag_name }}</a>
+            <a class="bg-orange"
+               href="{{ url_for('posts_by_tag', tag=tag.tag_name) }}" title="">
+                {{ tag.tag_name }}</a>
             {% endfor %}
         </span>
 
