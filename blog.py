@@ -4,10 +4,10 @@ from webforms import PostForm, SearchForm, LoginForm, TagForm
 from configs import *
 from webmodels import *
 import logging
-from logging.handlers import RotatingFileHandler
 import random
 
 # TODO fix 404 errors in single_post
+# TODO popular categories in footer
 # TODO fix posts in russian
 # TODO image field for post model
 # TODO fix time formats
@@ -138,6 +138,26 @@ def delete_post(id):
         db.session.commit()
         flash('Post deleted')
         app.logger.info(f'Post {post_to_delete.title} deleted')
+
+    except Exception as ex:
+        app.logger.error(f'The ERROR occurred: {ex}')
+        flash(f'Something is wrong! Error: {ex}')
+
+    finally:
+        return redirect(url_for('admin'))
+
+
+@app.route('/delete_tag_<int:id>', methods=['GET', 'POST'])
+def delete_tag(id):
+    app.logger.info('Went on the delete tag page')
+    # request tag that we need to delete
+    tag_to_delete = Tags.query.get_or_404(id)
+    try:
+        # deleting tag
+        db.session.delete(tag_to_delete)
+        db.session.commit()
+        flash('Tag deleted')
+        app.logger.info(f'Tag {tag_to_delete.tag_name} deleted')
 
     except Exception as ex:
         app.logger.error(f'The ERROR occurred: {ex}')

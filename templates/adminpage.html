@@ -70,6 +70,7 @@
                             Add post <i class="fa fa-plus"></i></button>
                     </a>
                     <hr class="invis">
+
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -93,9 +94,9 @@
                             <td>{{ post.slug }}</td>
                             {% if post.tags %}
                             <td>
-                            {% for tag in post.tags%}
-                            {{ tag.tag_name }},
-                            {% endfor %}
+                                {% for tag in post.tags%}
+                                {{ tag.tag_name }},
+                                {% endfor %}
                             </td>
                             {% else %}
                             <td>Tags</td>
@@ -115,6 +116,7 @@
 
                         </tbody>
                     </table>
+
                     <h2>Tags - {{ number_of_tags }}</h2>
 
                     <form method="POST">
@@ -127,11 +129,28 @@
 
                     <hr class="invis">
 
-                    <div class="d-flex flex-wrap m-n1">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         {% for tag in tags %}
-                        <a href="#" class="btn btn-sm btn-outline-secondary m-1">{{ tag.tag_name }}</a>
+                        <tr>
+                            <th scope="row">{{ tag.id }}</th>
+                            <td>{{ tag.tag_name}}</td>
+                            <td><a href="{{ url_for('delete_tag', id=tag.id)}}">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return confirm('Are you shure to delete?')">
+                                    Delete <i class="fa fa-trash-o"></i></button>
+                            </a></td>
+                        </tr>
                         {% endfor %}
-                    </div>
+                        </tbody>
+                    </table>
 
                     {% endblock %}
                     <hr class="invis">
