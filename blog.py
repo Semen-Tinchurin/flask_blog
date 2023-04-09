@@ -2,8 +2,9 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_ckeditor import CKEditor
 from flask_caching import Cache
 from webforms import PostForm, SearchForm, LoginForm, TagForm
-from configs import *
 from webmodels import *
+from constants import *
+from config import Config
 import logging
 import random
 
@@ -14,7 +15,6 @@ import random
 # TODO fix time formats
 # TODO fix links in posts and sidebar
 # TODO checking if admin
-# TODO cache navbar and footer
 # TODO logging
 # TODO async functions
 
@@ -28,18 +28,13 @@ NUMBER_OF_LATEST = 3
 NUMBER_OF_POPULAR = 3
 
 app = Flask(__name__)
+app.config.from_object(Config)
+
+# cache configuration
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
-# configuring the ckeditor
-app.config['CKEDITOR_SERVE_LOCAL'] = True
-app.config['CKEDITOR_ENABLE_CODESNIPPET'] = True
-app.config['CKEDITOR_CODE_THEME'] = 'monokai'
-app.config['CKEDITOR_PKG_TYPE'] = 'full'
 ckeditor = CKEditor(app)
 
-# configuring the database
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
-app.config['SECRET_KEY'] = SECRET_KEY
 
 # configuring logging
 FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
@@ -276,7 +271,7 @@ def single_post(slug):
     next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
     # request popular posts for sidebar
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
-    # requestin tags
+    # requesting tags
     tags = Tags.query.all()
     # randomize output of the tags
     shuffled_tags = random.sample(tags, len(tags))
@@ -324,7 +319,7 @@ def posts_by_tag(tag):
     posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
     # request popular posts for sidebar
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
-    # requestin tags
+    # requesting tags
     tags = Tags.query.all()
     return render_template('by_tag.html',
                            tag=tag,
