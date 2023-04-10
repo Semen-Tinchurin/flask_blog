@@ -197,10 +197,7 @@ def get_posts():
     app.logger.info('Requested all posts')
     # request all the posts from DB
     posts = Posts.query
-    # request all the tags from DB
-    tags = Tags.query.all()
-    # randomize output of the tags
-    shuffled_tags = random.sample(tags, len(tags))
+    popular_posts, shuffled_tags = get_posts_and_tags()
     # adding pagination
     page = request.args.get('page')
     if page and page.isdigit():
@@ -208,8 +205,6 @@ def get_posts():
     else:
         page = 1
     pages = posts.paginate(page=page, per_page=PAGINATION_NUM)
-    # request popular posts for sidebar
-    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
     return render_template('posts.html',
                            posts=posts,
                            pages=pages,
@@ -217,17 +212,23 @@ def get_posts():
                            tags=shuffled_tags)
 
 
-@app.route("/")
+# returns popular posts and tags for sidebar
 @cache.cached(timeout=60)
+def get_posts_and_tags():
+    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR).all()
+    # request all the tags from DB
+    tags = Tags.query.all()
+    # randomize output of the tags
+    shuffled_tags = random.sample(tags, len(tags))
+    return popular_posts, shuffled_tags
+
+
+@app.route("/")
 def index():
     app.logger.info('Went on site')
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
-    # request popular posts for sidebar
-    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
-    tags = Tags.query.all()
-    # randomize output of the tags
-    shuffled_tags = random.sample(tags, len(tags))
+    popular_posts, shuffled_tags = get_posts_and_tags()
     return render_template("index.html",
                            posts=posts,
                            popular_posts=popular_posts,
@@ -269,12 +270,7 @@ def single_post(slug):
     # request previous and next posts
     prev_post = Posts.query.filter(Posts.date_posted < post.date_posted).first()
     next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
-    # request popular posts for sidebar
-    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
-    # requesting tags
-    tags = Tags.query.all()
-    # randomize output of the tags
-    shuffled_tags = random.sample(tags, len(tags))
+    popular_posts, shuffled_tags = get_posts_and_tags()
     # counting views
     post.num_of_views += 1
     # saving views
@@ -292,9 +288,7 @@ def single_post(slug):
 def search():
     form = SearchForm()
     posts = Posts.query
-    tags = Tags.query.all()
-    # randomize output of the tags
-    shuffled_tags = random.sample(tags, len(tags))
+    popular_posts, shuffled_tags = get_posts_and_tags()
     if form.validate_on_submit():
         # get data from submitted form
         searched = form.searched.data
@@ -302,8 +296,6 @@ def search():
         # query the database
         posts = posts.filter(Posts.content.like('%' + searched + '%'))
         posts = posts.order_by(Posts.date_posted.desc()).all()
-        # request popular posts for sidebar
-        popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
         return render_template('search.html',
                                form=form,
                                searched=searched,
@@ -317,8 +309,7 @@ def search():
 @app.route('/<tag>')
 def posts_by_tag(tag):
     posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
-    # request popular posts for sidebar
-    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR)
+    popular_posts = get_posts_and_tags()[0]
     # requesting tags
     tags = Tags.query.all()
     return render_template('by_tag.html',
