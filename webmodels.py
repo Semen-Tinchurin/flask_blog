@@ -3,10 +3,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import pytz
 from blog import app
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+def now():
+    timezone = pytz.timezone(app.config['TIMEZONE'])
+    return datetime.now(tz=timezone)
+
 
 # many to many relationship for Posts ang Tags models
 post_tags = db.Table('post_tags',
@@ -19,7 +26,7 @@ class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     content = db.Column(db.Text)
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow())
+    date_posted = db.Column(db.DateTime, default=now())
     slug = db.Column(db.String(100))
     num_of_views = db.Column(db.Integer, default=0)
 

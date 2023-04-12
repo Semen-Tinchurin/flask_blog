@@ -12,7 +12,6 @@ import random
 # TODO popular categories in footer
 # TODO fix posts in russian
 # TODO image field for post model
-# TODO fix time formats
 # TODO fix links in posts and sidebar
 # TODO checking if admin
 # TODO logging
@@ -34,7 +33,6 @@ app.config.from_object(Config)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 ckeditor = CKEditor(app)
-
 
 # configuring logging
 FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
@@ -259,6 +257,20 @@ def login():
 def page_not_found(error):
     app.logger.error('404 PAGE NOT FOUND')
     return render_template('404.html', title="PAGE NOT FOUND"), 404
+
+
+# preview page before saving post
+# @app.route('/preview', methods=['POST'])
+# def preview():
+#     form = PostForm()
+#     if form.validate():
+#         post = Posts(title=form.title.data,
+#                      content=form.content.data,
+#                      slug=form.slug.data,
+#                      tags=Tags.query.filter(Tags.id.in_(form.tags.data)))
+#         app.logger.info(f'Preview post {post.title}')
+#         return render_template('preview.html',
+#                                post=post)
 
 
 # page for single post
