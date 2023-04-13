@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for, request, session
 from flask_ckeditor import CKEditor
 from flask_caching import Cache
 from webforms import PostForm, SearchForm, LoginForm, TagForm
@@ -52,10 +52,22 @@ wer_log.setLevel(logging.ERROR)
 # flask db migrate -m 'message'
 # flask db upgrade
 
+@app.route('/timezone', methods=['POST'])
+def set_timezone():
+    timezone = request.json['timezone']
+    session['timezone'] = timezone
+    app.logger.info(timezone)
+    return timezone
+
+
+def convert_created_time(time):
+    return time
+
 
 @app.route("/brick", methods=['GET', 'POST'])
 def admin():
     app.logger.info('Went on the admin page')
+    app.logger.info(f'timezone - {session.get("timezone")}')
     # request all the posts from DB
     posts = Posts.query.order_by(Posts.date_posted.desc())
     # counting posts
@@ -278,7 +290,9 @@ def page_not_found(error):
 def single_post(slug):
     # request wanted post
     post = Posts.query.filter_by(slug=slug).first()
+    created_time = convert_created_time(post.date_posted)
     app.logger.info(f'Requested post - {post.title}')
+    app.logger.info(created_time)
     # request previous and next posts
     prev_post = Posts.query.filter(Posts.date_posted < post.date_posted).first()
     next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
