@@ -10,7 +10,6 @@ class Config:
     CKEDITOR_PKG_TYPE = 'full'
     # configuring the database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
-    TIMEZONE = 'Asia/Yerevan'
 
 
 class DevelopmentConfig(Config):

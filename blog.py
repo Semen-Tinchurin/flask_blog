@@ -1,12 +1,13 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, session
 from flask_ckeditor import CKEditor
 from flask_caching import Cache
+import logging
+import random
+from datetime import datetime, timedelta
 from webforms import PostForm, SearchForm, LoginForm, TagForm
 from webmodels import *
 from constants import *
 from config import Config
-import logging
-import random
 
 # TODO fix 404 errors in single_post
 # TODO popular categories in footer
@@ -54,6 +55,10 @@ wer_log.setLevel(logging.ERROR)
 
 @app.route('/timezone', methods=['POST'])
 def set_timezone():
+    """
+    receives time zone from users browser in format "UTC+/-HH:MM"
+    and returns time zone
+    """
     timezone = request.json['timezone']
     session['timezone'] = timezone
     app.logger.info(timezone)
@@ -61,13 +66,28 @@ def set_timezone():
 
 
 def convert_created_time(time):
-    return time
+    """
+    Takes in post created date,
+    returns this date in user time
+    """
+    timezone = session.get("timezone")
+    sign = timezone[3]
+    hours = int(timezone[4:6])
+    minutes = int(timezone[7:])
+    if sign == '+':
+        delta = timedelta(hours=hours, minutes=minutes)
+        result = time + delta
+    elif sign == '-':
+        delta = timedelta(hours=-hours, minutes=-minutes)
+        result = time + delta
+    else:
+        result = time
+    return result
 
 
 @app.route("/brick", methods=['GET', 'POST'])
 def admin():
     app.logger.info('Went on the admin page')
-    app.logger.info(f'timezone - {session.get("timezone")}')
     # request all the posts from DB
     posts = Posts.query.order_by(Posts.date_posted.desc())
     # counting posts
