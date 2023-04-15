@@ -1,6 +1,11 @@
 from .constants import *
 
 
+# logging configuration
+LOG_FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+DATE_FORMAT = '%d.%m.%Y %I:%M:%S %p'
+
+
 class Config:
     SECRET_KEY = SECRET_KEY
     # configuring the ckeditor

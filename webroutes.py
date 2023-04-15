@@ -1,11 +1,15 @@
+import sys
+
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
 from flask_caching import Cache
 from datetime import timedelta
+import logging
 from . import db
 from .webmodels import Posts, Tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm
 from .constants import ADMIN_LOG, ADMIN_PASS
+from .config import LOG_FORMAT, DATE_FORMAT
 import random
 
 PAGINATION_NUM = 3
@@ -13,6 +17,19 @@ NUMBER_OF_LATEST = 3
 NUMBER_OF_POPULAR = 3
 
 bp = Blueprint('routes', __name__)
+
+# configuring logging
+logging.basicConfig(
+    format=LOG_FORMAT,
+    datefmt=DATE_FORMAT,
+    level=logging.WARNING)
+
+# configure werkzeug logger
+wer_log = logging.getLogger('werkzeug')
+wer_log.setLevel(logging.ERROR)
+
+logger = logging.getLogger('routes')
+logger.setLevel(logging.INFO)
 
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 
@@ -25,6 +42,8 @@ def convert_created_time(time):
     result = ''
     try:
         timezone = session.get("timezone")
+        logger.info(timezone)
+        print(timezone)
         sign = timezone[3]
         hours = int(timezone[4:6])
         minutes = int(timezone[7:])
@@ -35,7 +54,7 @@ def convert_created_time(time):
             delta = timedelta(hours=-hours, minutes=-minutes)
             result = time + delta
     except Exception as ex:
-        # current_app.logger.info(ex)
+        logger.info(ex)
         result = time
     return result
 
@@ -228,7 +247,7 @@ def get_posts_and_tags():
 
 @bp.route("/")
 def index():
-    # app.logger.info('Went on site')
+    logger.info('Went on site')
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
     popular_posts, shuffled_tags = get_posts_and_tags()

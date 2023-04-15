@@ -2,19 +2,20 @@ from flask import Flask
 from .webmodels import db
 from flask_ckeditor import CKEditor
 from .config import Config
-import logging
 
+# TODO fix 404 errors in single_post
+# TODO popular categories in footer
+# TODO fix posts in russian
+# TODO image field for post model
+# TODO fix links in posts and sidebar
+# TODO checking if admin
+# TODO logging
+# TODO async functions
 
-# configuring logging
-FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
-DATE_FORMAT = '%d.%m.%Y %I:%M:%S %p'
-logging.basicConfig(
-    format=FORMAT,
-    datefmt=DATE_FORMAT,
-    level=logging.WARNING)
-# configure werkzeug logger
-wer_log = logging.getLogger('werkzeug')
-wer_log.setLevel(logging.ERROR)
+# https://codepen.io/ig_design/pen/omQXoQ
+# https://support.sendwithus.com/jinja/jinja_time/
+# https://www.free-css.com/free-css-templates/page244/tech-blog
+# "https://www.digitalocean.com/community/tutorials/how-to-use-many-to-many-database-relationships-with-flask-sqlalchemy"
 
 
 def create_app():
