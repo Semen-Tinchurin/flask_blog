@@ -56,12 +56,18 @@ wer_log.setLevel(logging.ERROR)
 @app.route('/timezone', methods=['POST'])
 def set_timezone():
     """
-    receives time zone from users browser in format "UTC+/-HH:MM"
+    receives time zone from users browser
+    in format "UTC+/-HH:MM"
     and returns time zone
     """
-    timezone = request.json['timezone']
-    session['timezone'] = timezone
-    app.logger.info(timezone)
+    timezone = ''
+    try:
+        timezone = request.json['timezone']
+        session['timezone'] = timezone
+        app.logger.info(timezone)
+    except Exception as ex:
+        app.logger.info(ex)
+        session['timezone'] = 'UTC +0'
     return timezone
 
 
@@ -70,17 +76,20 @@ def convert_created_time(time):
     Takes in post created date,
     returns this date in user time
     """
-    timezone = session.get("timezone")
-    sign = timezone[3]
-    hours = int(timezone[4:6])
-    minutes = int(timezone[7:])
-    if sign == '+':
-        delta = timedelta(hours=hours, minutes=minutes)
-        result = time + delta
-    elif sign == '-':
-        delta = timedelta(hours=-hours, minutes=-minutes)
-        result = time + delta
-    else:
+    result = ''
+    try:
+        timezone = session.get("timezone")
+        sign = timezone[3]
+        hours = int(timezone[4:6])
+        minutes = int(timezone[7:])
+        if sign == '+':
+            delta = timedelta(hours=hours, minutes=minutes)
+            result = time + delta
+        elif sign == '-':
+            delta = timedelta(hours=-hours, minutes=-minutes)
+            result = time + delta
+    except Exception as ex:
+        app.logger.info(ex)
         result = time
     return result
 
@@ -312,7 +321,6 @@ def single_post(slug):
     post = Posts.query.filter_by(slug=slug).first()
     created_time = convert_created_time(post.date_posted)
     app.logger.info(f'Requested post - {post.title}')
-    app.logger.info(created_time)
     # request previous and next posts
     prev_post = Posts.query.filter(Posts.date_posted < post.date_posted).first()
     next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
