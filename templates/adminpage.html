@@ -65,7 +65,7 @@
 
                     <h2>Total posts - {{ number_of_posts }}</h2>
 
-                    <a href="{{ url_for('add_post')}}">
+                    <a href="{{ url_for('routes.add_post')}}">
                         <button type="submit" class="btn btn-success">
                             Add post <i class="fa fa-plus"></i></button>
                     </a>
@@ -87,7 +87,7 @@
                         {% for post in posts %}
                         <tr>
                             <th scope="row">{{ post.id }}</th>
-                            <td><a href="{{ url_for('single_post', slug=post.slug)}}" title="{{ post.title }}">
+                            <td><a href="{{ url_for('routes.single_post', slug=post.slug)}}" title="{{ post.title }}">
                                 {{ post.title }}</a></td>
                             <td>{{ post.date_posted.strftime('%d.%m.%y %H:%M') }}</td>
                             <td>{{ post.num_of_views }}</td>
@@ -101,12 +101,12 @@
                             {% else %}
                             <td>Tags</td>
                             {% endif %}
-                            <td><a href="{{ url_for('edit_post', id=post.id)}}">
+                            <td><a href="{{ url_for('routes.edit_post', id=post.id)}}">
                                 <button type="submit" class="btn btn-warning">
                                     Edit <i class="fa fa-pencil"></i>
                                 </button>
                             </a>
-                                <a href="{{ url_for('delete_post', id=post.id)}}">
+                                <a href="{{ url_for('routes.delete_post', id=post.id)}}">
                                     <button type="submit" class="btn btn-danger"
                                             onclick="return confirm('Are you shure to delete?')">
                                         Delete <i class="fa fa-trash-o"></i></button>
@@ -142,7 +142,7 @@
                         <tr>
                             <th scope="row">{{ tag.id }}</th>
                             <td>{{ tag.tag_name}}</td>
-                            <td><a href="{{ url_for('delete_tag', id=tag.id)}}">
+                            <td><a href="{{ url_for('routes.delete_tag', id=tag.id)}}">
                                 <button type="submit" class="btn btn-danger"
                                         onclick="return confirm('Are you shure to delete?')">
                                     Delete <i class="fa fa-trash-o"></i></button>

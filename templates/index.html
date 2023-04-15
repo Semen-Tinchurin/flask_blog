@@ -15,7 +15,7 @@
         <div class="blog-box row">
             <div class="col-md-4">
                 <div class="post-media">
-                    <a href="{{ url_for('single_post', slug=post.slug)}}" title="">
+                    <a href="{{ url_for('routes.single_post', slug=post.slug)}}" title="">
                         <img src="static/images/coding.jpg" alt="" class="img-fluid">
                         <div class="hovereffect"></div>
                     </a>
@@ -23,13 +23,13 @@
             </div><!-- end col -->
 
             <div class="blog-meta big-meta col-md-8">
-                <h4><a href="{{ url_for('single_post', slug=post.slug)}}" title="{{ post.title }}">{{ post.title }}</a>
+                <h4><a href="{{ url_for('routes.single_post', slug=post.slug)}}" title="{{ post.title }}">{{ post.title }}</a>
                 </h4>
                 <p>{{ post.content|truncate(150, True)|safe }}</p>
 
                 <small class="firstsmall">
                     {% for tag in post.tags %}
-                    <a class="bg-orange" href="{{ url_for('posts_by_tag', tag=tag.tag_name) }}" title="">
+                    <a class="bg-orange" href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}" title="">
                         {{ tag.tag_name }}</a>
                     {% endfor %}
                 </small>

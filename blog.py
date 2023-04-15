@@ -3,7 +3,7 @@ from flask_ckeditor import CKEditor
 from flask_caching import Cache
 import logging
 import random
-from datetime import datetime, timedelta
+from datetime import timedelta
 from webforms import PostForm, SearchForm, LoginForm, TagForm
 from webmodels import *
 from constants import *
@@ -53,24 +53,6 @@ wer_log.setLevel(logging.ERROR)
 # flask db migrate -m 'message'
 # flask db upgrade
 
-@app.route('/timezone', methods=['POST'])
-def set_timezone():
-    """
-    receives time zone from users browser
-    in format "UTC+/-HH:MM"
-    and returns time zone
-    """
-    timezone = ''
-    try:
-        timezone = request.json['timezone']
-        session['timezone'] = timezone
-        app.logger.info(timezone)
-    except Exception as ex:
-        app.logger.info(ex)
-        session['timezone'] = 'UTC +0'
-    return timezone
-
-
 def convert_created_time(time):
     """
     Takes in post created date,
@@ -92,6 +74,24 @@ def convert_created_time(time):
         app.logger.info(ex)
         result = time
     return result
+
+
+@app.route('/timezone', methods=['POST'])
+def set_timezone():
+    """
+    receives time zone from users browser
+    in format "UTC+/-HH:MM"
+    and returns time zone
+    """
+    timezone = ''
+    try:
+        timezone = request.json['timezone']
+        session['timezone'] = timezone
+        app.logger.info(timezone)
+    except Exception as ex:
+        app.logger.info(ex)
+        session['timezone'] = 'UTC +0'
+    return timezone
 
 
 @app.route("/brick", methods=['GET', 'POST'])

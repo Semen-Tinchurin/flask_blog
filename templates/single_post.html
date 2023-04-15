@@ -6,8 +6,8 @@
 <div class="page-wrapper">
     <div class="blog-title-area text-center">
         <ol class="breadcrumb hidden-xs-down">
-            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('get_posts') }}">Blog</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('routes.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('routes.get_posts') }}">Blog</a></li>
             <li class="breadcrumb-item active">{{ post.title }}
             </li>
         </ol>
@@ -17,7 +17,7 @@
         <span class="color-orange">
             {% for tag in post.tags %}
             <a class="bg-orange"
-               href="{{ url_for('posts_by_tag', tag=tag.tag_name) }}" title="">
+               href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}" title="">
                 {{ tag.tag_name }}</a>
             {% endfor %}
         </span>
@@ -45,7 +45,7 @@
             <div class="col-lg-6">
                 <div class="blog-box">
                     <div class="post-media">
-                        <a href="{{ url_for('single_post', slug=prev_post.slug)}}" title="">
+                        <a href="{{ url_for('routes.single_post', slug=prev_post.slug)}}" title="">
                             <img src="upload/tech_menu_04.jpg" alt="" class="img-fluid">
                             <div class="hovereffect">
                                 <span class=""></span>
@@ -53,7 +53,7 @@
                         </a>
                     </div><!-- end media -->
                     <div class="blog-meta">
-                        <h4><a href="{{ url_for('single_post', slug=prev_post.slug)}}" title="">
+                        <h4><a href="{{ url_for('routes.single_post', slug=prev_post.slug)}}" title="">
                             {{ prev_post.title}}</a>
                         </h4>
                         <small>prev post</small>
@@ -65,7 +65,7 @@
             <div class="col-lg-6">
                 <div class="blog-box">
                     <div class="post-media">
-                        <a href="{{ url_for('single_post', slug=next_post.slug)}}" title="">
+                        <a href="{{ url_for('routes.single_post', slug=next_post.slug)}}" title="">
                             <img src="upload/tech_menu_06.jpg" alt="" class="img-fluid">
                             <div class="hovereffect">
                                 <span class=""></span>
@@ -73,7 +73,7 @@
                         </a>
                     </div><!-- end media -->
                     <div class="blog-meta">
-                        <h4><a href="{{ url_for('single_post', slug=next_post.slug)}}" title="">
+                        <h4><a href="{{ url_for('routes.single_post', slug=next_post.slug)}}" title="">
                             {{ next_post.title }}</a></h4>
                         <small>next post</small>
                         <small>{{ next_post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>

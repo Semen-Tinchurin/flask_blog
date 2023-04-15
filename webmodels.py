@@ -3,10 +3,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from blog import app
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+
+db = SQLAlchemy()
+# migrate = Migrate(app, db)
 
 
 # many to many relationship for Posts ang Tags models
