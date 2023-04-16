@@ -1,6 +1,5 @@
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
-from flask_caching import Cache
 from datetime import timedelta
 import logging
 from . import db
@@ -29,10 +28,7 @@ wer_log.setLevel(logging.ERROR)
 logger = logging.getLogger('routes')
 logger.setLevel(logging.INFO)
 
-cache = Cache(config={'CACHE_TYPE': 'simple'})
 
-
-@cache.cached(timeout=60)
 def convert_created_time(time):
     """
     Takes in post created date,
@@ -236,7 +232,6 @@ def get_posts():
 
 
 # returns popular posts and tags for sidebar
-@cache.cached(timeout=60)
 def get_posts_and_tags():
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR).all()
     # request all the tags from DB

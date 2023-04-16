@@ -9,7 +9,7 @@ from .config import Config
 # TODO image field for post model
 # TODO fix links in posts and sidebar
 # TODO checking if admin
-# TODO logging
+# TODO cache navbar, sidebar, footer and functions
 # TODO async functions
 
 # https://codepen.io/ig_design/pen/omQXoQ
@@ -23,8 +23,6 @@ def create_app():
     app.config.from_object(Config)
     ckeditor = CKEditor(app)
     db.init_app(app)
-    from .webroutes import cache
-    cache.init_app(app)
     from .webroutes import bp
     app.register_blueprint(bp)
     return app

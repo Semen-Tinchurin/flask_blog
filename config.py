@@ -1,6 +1,5 @@
 from .constants import *
 
-
 # logging configuration
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 DATE_FORMAT = '%d.%m.%Y %I:%M:%S %p'
