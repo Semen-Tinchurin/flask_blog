@@ -1,5 +1,4 @@
 import pytest
-
 from webmodels import Posts, Tags
 
 # commands to run tests:
