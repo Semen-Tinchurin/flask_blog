@@ -14,11 +14,14 @@ class Config:
     CKEDITOR_PKG_TYPE = 'full'
     # configuring the database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
-
-
-class DevelopmentConfig(Config):
+    CACHE_TYPE = 'SimpleCache'
+    SEND_FILE_MAX_AGE_DEFAULT = 0
     DEBUG = True
 
 
-class ProductionConfig(Config):
-    DEBUG = False
+# class DevelopmentConfig(Config):
+#     DEBUG = True
+
+
+# class ProductionConfig(Config):
+#     DEBUG = False

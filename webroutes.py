@@ -2,7 +2,7 @@ from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
 from datetime import timedelta
 import logging
-from . import db
+from . import db, cache
 from .webmodels import Posts, Tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm
 from .constants import ADMIN_LOG, ADMIN_PASS
@@ -53,6 +53,7 @@ def convert_created_time(time):
 
 
 @bp.route('/timezone', methods=['POST'])
+@cache.cached(timeout=60)
 def set_timezone():
     """
     receives time zone from users browser
@@ -232,6 +233,7 @@ def get_posts():
 
 
 # returns popular posts and tags for sidebar
+@cache.cached(timeout=60)
 def get_posts_and_tags():
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR).all()
     # request all the tags from DB

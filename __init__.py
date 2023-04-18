@@ -1,6 +1,7 @@
 from flask import Flask
-from .webmodels import db
+from flask_caching import Cache
 from flask_ckeditor import CKEditor
+from .webmodels import db
 from .config import Config
 
 # TODO fix 404 errors in single_post
@@ -17,6 +18,8 @@ from .config import Config
 # https://www.free-css.com/free-css-templates/page244/tech-blog
 # "https://www.digitalocean.com/community/tutorials/how-to-use-many-to-many-database-relationships-with-flask-sqlalchemy"
 
+cache = Cache()
+
 
 def create_app():
     app = Flask(__name__)
@@ -25,6 +28,7 @@ def create_app():
     db.init_app(app)
     from .webroutes import bp
     app.register_blueprint(bp)
+    cache.init_app(app)
     return app
 
 
