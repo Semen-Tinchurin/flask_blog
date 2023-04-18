@@ -15,7 +15,7 @@ class Config:
     # configuring the database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{DB_PASSWORD}@localhost/users'
     CACHE_TYPE = 'SimpleCache'
-    SEND_FILE_MAX_AGE_DEFAULT = 0
+    TEMPLATES_AUTO_RELOAD = True
     DEBUG = True
 
 
