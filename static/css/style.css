@@ -384,7 +384,7 @@ div.tab button:hover {
 }
 
 .header .navbar-nav .has-submenu.menu-large ul li {
-    background: url(images/menubg.jpg) repeat-y center center #ffffff !important;
+    background: repeat-y center center #ffffff !important;
 }
 
 .tab-details {
