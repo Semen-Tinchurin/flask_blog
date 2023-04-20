@@ -1,5 +1,5 @@
 # Flask blog
-This is my personal blog. Here I train my skills in working with the following set of technologies: Flask, MySQL, SQLAlchemy, Jinja2, Logging, HTML&CSS.
+This is my personal blog. Here I train my skills in working with the following set of technologies: Flask, MySQL, SQLAlchemy, Jinja2, Logging, Caching, HTML&CSS.
 In the future I plan to deploy this blog on a remote server and write posts about IT.
 
 ### Contributing
