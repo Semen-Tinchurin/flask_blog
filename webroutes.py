@@ -12,6 +12,7 @@ import random
 PAGINATION_NUM = 3
 NUMBER_OF_LATEST = 3
 NUMBER_OF_POPULAR = 3
+NUMBER_OF_POPULAR_TAGS = 3
 
 bp = Blueprint('routes', __name__)
 
@@ -293,6 +294,10 @@ def page_not_found(error):
 #         app.logger.info(f'Preview post {post.title}')
 #         return render_template('preview.html',
 #                                post=post)
+
+# returns the most popular tags for footer
+def get_popular_tags(NUMBER_OF_POPULAR_TAGS):
+    pass
 
 
 # page for single post

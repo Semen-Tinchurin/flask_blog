@@ -4,7 +4,7 @@ from flask_ckeditor import CKEditor
 from .webmodels import db
 from .config import Config
 
-# TODO fix 404 errors in single_post
+# TODO create function for popular tags in footer
 # TODO popular categories in footer
 # TODO fix posts in russian
 # TODO image field for post model
