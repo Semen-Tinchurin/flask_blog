@@ -30,7 +30,7 @@ logger = logging.getLogger('routes')
 logger.setLevel(logging.INFO)
 
 
-def convert_created_time(time):
+def convert_created_time(*args, **kwargs):
     """
     Takes in post created date,
     returns this date in user time
@@ -43,14 +43,14 @@ def convert_created_time(time):
         minutes = int(timezone[7:])
         if sign == '+':
             delta = timedelta(hours=hours, minutes=minutes)
-            result = time + delta
+            result = args[0] + delta
         elif sign == '-':
             delta = timedelta(hours=-hours, minutes=-minutes)
-            result = time + delta
+            result = args[0] + delta
     except Exception as ex:
         logger.error(ex)
-        result = time
-    return result
+        result = args[0]
+    return result.strftime('%d %B %Y, %H:%M')
 
 
 @bp.route('/timezone', methods=['POST'])
@@ -74,6 +74,8 @@ def set_timezone():
 
 @bp.route("/brick", methods=['GET', 'POST'])
 def admin():
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     logger.info('Went on the admin page')
     # request all the posts from DB
     posts = Posts.query.order_by(Posts.date_posted.desc())
@@ -100,7 +102,8 @@ def admin():
                            number_of_posts=number_of_posts,
                            tags=shuffled_tags,
                            number_of_tags=number_of_tags,
-                           form=form)
+                           form=form,
+                           **context)
 
 
 # add post page
@@ -215,6 +218,8 @@ def edit_post(id):
 
 @bp.route('/posts')
 def get_posts():
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     logger.info('Requested all posts')
     # request all the posts from DB
     posts = Posts.query
@@ -230,7 +235,8 @@ def get_posts():
                            posts=posts,
                            pages=pages,
                            popular_posts=popular_posts,
-                           tags=shuffled_tags)
+                           tags=shuffled_tags,
+                           **context)
 
 
 # returns popular posts and tags for sidebar
@@ -246,6 +252,8 @@ def get_posts_and_tags():
 
 @bp.route("/")
 def index():
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     logger.info('Went on site')
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
@@ -253,7 +261,8 @@ def index():
     return render_template("index.html",
                            posts=posts,
                            popular_posts=popular_posts,
-                           tags=shuffled_tags)
+                           tags=shuffled_tags,
+                           **context)
 
 
 @bp.errorhandler(500)
@@ -303,6 +312,8 @@ def get_popular_tags(NUMBER_OF_POPULAR_TAGS):
 # page for single post
 @bp.route("/posts/<slug>")
 def single_post(slug):
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     # request wanted post
     post = Posts.query.filter_by(slug=slug).first()
     logger.info(f'Requested post - {post.title}')
@@ -319,12 +330,15 @@ def single_post(slug):
                            popular_posts=popular_posts,
                            tags=shuffled_tags,
                            next_post=next_post,
-                           prev_post=prev_post)
+                           prev_post=prev_post,
+                           **context)
 
 
 # search function
 @bp.route('/search', methods=['POST'])
 def search():
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     form = SearchForm()
     posts = Posts.query
     popular_posts, shuffled_tags = get_posts_and_tags()
@@ -340,7 +354,8 @@ def search():
                                searched=searched,
                                posts=posts,
                                popular_posts=popular_posts,
-                               tags=shuffled_tags)
+                               tags=shuffled_tags,
+                               **context)
     else:
         return redirect(url_for('index'))
 

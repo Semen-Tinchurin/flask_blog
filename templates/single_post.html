@@ -23,7 +23,7 @@
         </span>
 
         <div class="blog-meta big-meta">
-            <small>{{ post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+            <small>{{ convert(post.date_posted) }}</small>
             <small>by Admin</small>
             <small><i class="fa fa-eye"></i>{{ post.num_of_views }}</small>
         </div><!-- end meta -->
@@ -57,7 +57,7 @@
                             {{ prev_post.title}}</a>
                         </h4>
                         <small>prev post</small>
-                        <small>{{ prev_post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                        <small>{{ convert(prev_post.date_posted) }}</small>
                     </div><!-- end meta -->
                 </div><!-- end blog-box -->
             </div><!-- end col -->
@@ -76,7 +76,7 @@
                         <h4><a href="{{ url_for('routes.single_post', slug=next_post.slug)}}" title="">
                             {{ next_post.title }}</a></h4>
                         <small>next post</small>
-                        <small>{{ next_post.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                        <small>{{ convert(next_post.date_posted) }}</small>
                     </div><!-- end meta -->
                 </div><!-- end blog-box -->
             </div><!-- end col -->

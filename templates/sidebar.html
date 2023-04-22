@@ -30,7 +30,7 @@
                         <div class="w-100 justify-content-between">
 <!--                            <img src="static/upload/tech_blog_08.jpg" alt="" class="img-fluid float-left">-->
                             <h5 class="mb-1">{{ popular.title }}</h5>
-                            <small>{{ popular.date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                            <small>{{ convert(popular.date_posted) }}</small>
                         </div>
                     </a>
                     {% endfor %}

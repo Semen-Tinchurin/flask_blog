@@ -89,7 +89,7 @@
                             <th scope="row">{{ post.id }}</th>
                             <td><a href="{{ url_for('routes.single_post', slug=post.slug)}}" title="{{ post.title }}">
                                 {{ post.title }}</a></td>
-                            <td>{{ post.date_posted.strftime('%d.%m.%y %H:%M') }}</td>
+                            <td>{{ convert(post.date_posted) }}</td>
                             <td>{{ post.num_of_views }}</td>
                             <td>{{ post.slug }}</td>
                             {% if post.tags %}
