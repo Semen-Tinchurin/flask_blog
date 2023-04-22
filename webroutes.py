@@ -362,6 +362,8 @@ def search():
 
 @bp.route('/<tag>')
 def posts_by_tag(tag):
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     logger.info(f'Posts by tag {tag}')
     posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
     popular_posts = get_posts_and_tags()[0]
@@ -371,7 +373,8 @@ def posts_by_tag(tag):
                            tag=tag,
                            posts=posts,
                            tags=tags,
-                           popular_posts=popular_posts)
+                           popular_posts=popular_posts,
+                           **context)
 
 
 @bp.route("/useful_stuff")
