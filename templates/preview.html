@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+{{ ckeditor.load_code_theme() }}
+<div class="page-wrapper">
+    <div class="blog-title-area text-center">
+        <ol class="breadcrumb hidden-xs-down">
+            <li class="breadcrumb-item"><a href="{{ url_for('routes.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('routes.get_posts') }}">Blog</a></li>
+            <li class="breadcrumb-item active">{{ title }}
+            </li>
+        </ol>
+
+        <h3>{{ title }}</h3>
+
+        <span class="color-orange">
+            {% for tag in tags %}
+            <a class="bg-orange"
+               href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}" title="">
+                {{ tag.tag_name }}</a>
+            {% endfor %}
+        </span>
+
+        <div class="blog-meta big-meta">
+            <small>{{ date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+            <small>by Admin</small>
+            <small><i class="fa fa-eye"></i>123</small>
+        </div><!-- end meta -->
+
+    </div><!-- end title -->
+
+    <div class="blog-content">
+        <div class="pp">
+            <p>{{ content|safe }}</p>
+
+        </div><!-- end pp -->
+
+    </div><!-- end content -->
+
+    <hr class="invis1">
+
+
+
+</div><!-- end page-wrapper -->
+
+
+<div class="page-wrapper">
+    <div class="blog-list clearfix">
+        <hr class="invis">
+        <div class="blog-box row">
+        <div class="col-md-4">
+            <div class="post-media">
+                <a href="{{ url_for('routes.single_post', slug=slug)}}" title="">
+                    <img src="static/images/coding.jpg" alt="" class="img-fluid">
+                    <div class="hovereffect"></div>
+                </a>
+            </div><!-- end media -->
+        </div><!-- end col -->
+
+        <div class="blog-meta big-meta col-md-8">
+            <h4><a href="{{ url_for('routes.single_post', slug=slug)}}" title="{{ title }}">
+                {{ title }}</a>
+            </h4>
+            <p>{{ content|truncate(150, True)|safe }}</p>
+
+                <small class="firstsmall">
+                    {% for tag in tags %}
+                    <a class="bg-orange" href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}" title="">
+                        {{ tag.tag_name }}</a>
+                    {% endfor %}
+                </small>
+
+                <small>{{ date_posted.strftime('%d %B %Y, %H:%M') }}</small>
+                <small>by Admin</small>
+                <small><i class="fa fa-eye"></i>123</small>
+
+        </div><!-- end meta -->
+    </div><!-- end blog-box -->
+        <hr class="invis">
+
+    </div><!-- end blog-list -->
+</div><!-- end page-wrapper -->
+
+{% endblock %}

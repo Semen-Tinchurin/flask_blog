@@ -22,10 +22,7 @@
     {{ form.tags(class="form-control") }}
     <br/>
     {{ form.submit(class="btn btn-success", value="Save") }}
-
-    <button type="button" class="btn btn-warning">
-        Preview <i class="fa fa-desktop"></i>
-    </button>
+    {{ form.preview(class="btn btn-primary", value="Preview") }}
 
 </form>
 {{ ckeditor.load() }}
