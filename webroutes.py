@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
 from datetime import timedelta
@@ -112,7 +114,7 @@ def add_post():
     logger.info('Went on the add post page')
     form = PostForm()
     form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
-    if form.validate_on_submit():
+    if form.validate_on_submit() and form.submit.data:
         try:
             post = Posts(title=form.title.data,
                          content=form.content.data,
@@ -132,6 +134,22 @@ def add_post():
             logger.error(ex)
         finally:
             return redirect(url_for('routes.admin'))
+    elif form.validate_on_submit() and form.preview.data:
+        # creating context to pass convert_created_time function to the page
+        context = {'convert': convert_created_time}
+        date_posted = datetime.datetime.utcnow()
+        title = form.title.data
+        content = form.content.data
+        slug = form.slug.data
+        tags = Tags.query.filter(Tags.id.in_(form.tags.data))
+        logger.info(f'Preview post {title}')
+        return render_template('preview.html',
+                               title=title,
+                               content=content,
+                               tags=tags,
+                               slug=slug,
+                               date_posted=date_posted,
+                               **context)
     # redirect to the page
     return render_template('add_post.html', form=form)
 
@@ -290,19 +308,6 @@ def page_not_found(error):
     logger.error('404 PAGE NOT FOUND')
     return render_template('404.html', title="PAGE NOT FOUND"), 404
 
-
-# preview page before saving post
-# @app.route('/preview', methods=['POST'])
-# def preview():
-#     form = PostForm()
-#     if form.validate():
-#         post = Posts(title=form.title.data,
-#                      content=form.content.data,
-#                      slug=form.slug.data,
-#                      tags=Tags.query.filter(Tags.id.in_(form.tags.data)))
-#         app.logger.info(f'Preview post {post.title}')
-#         return render_template('preview.html',
-#                                post=post)
 
 # returns the most popular tags for footer
 def get_popular_tags(NUMBER_OF_POPULAR_TAGS):

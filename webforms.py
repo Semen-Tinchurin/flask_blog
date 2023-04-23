@@ -14,6 +14,7 @@ class PostForm(FlaskForm):
     slug = StringField('Slug', validators=[DataRequired()])
     tags = SelectMultipleField('Tags', coerce=int)
     submit = SubmitField('Submit')
+    preview = SubmitField('Preview')
 
 
 class SearchForm(FlaskForm):
