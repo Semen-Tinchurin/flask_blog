@@ -1,6 +1,7 @@
 {% cache 60 %}
 <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
     <div class="sidebar">
+        {% set sidebar_data = g.sidebar_data %}
 
         <hr class="invis">
 
@@ -11,7 +12,7 @@
                     <!-- Tags Start -->
                     <!-- https://www.free-css.com/free-css-templates/page281/biznews -->
                     <div class="d-flex flex-wrap m-n1">
-                        {% for tag in tags %}
+                        {% for tag in sidebar_data[1] %}
                         <a href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}" class="btn btn-sm btn-outline-secondary m-1">{{ tag.tag_name }}</a>
                         {% endfor %}
                     </div>
@@ -24,7 +25,7 @@
             <h2 class="widget-title">Popular Posts</h2>
             <div class="blog-list-widget">
                 <div class="list-group">
-                    {% for popular in popular_posts %}
+                    {% for popular in sidebar_data[0] %}
                     <a href="{{ url_for('routes.single_post', slug=popular.slug)}}"
                        class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="w-100 justify-content-between">

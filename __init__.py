@@ -5,7 +5,6 @@ from .webmodels import db
 from .config import Config
 
 # TODO create function for popular tags in footer
-# TODO popular categories in footer
 # TODO fix posts in russian
 # TODO image field for post model
 # TODO fix links in posts and sidebar

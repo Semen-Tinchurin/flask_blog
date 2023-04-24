@@ -1,7 +1,6 @@
-import datetime
-
 from flask import Blueprint, flash, redirect, \
-    url_for, render_template, request, session
+    url_for, render_template, request, session, g
+import datetime
 from datetime import timedelta
 import logging
 from . import db, cache
@@ -275,11 +274,8 @@ def index():
     logger.info('Went on site')
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
-    popular_posts, shuffled_tags = get_posts_and_tags()
     return render_template("index.html",
                            posts=posts,
-                           popular_posts=popular_posts,
-                           tags=shuffled_tags,
                            **context)
 
 
@@ -310,8 +306,14 @@ def page_not_found(error):
 
 
 # returns the most popular tags for footer
-def get_popular_tags(NUMBER_OF_POPULAR_TAGS):
-    pass
+# def get_popular_tags():
+#     pass
+
+
+@bp.before_request
+def load_sidebar_data():
+    popular_posts, shuffled_tags = get_posts_and_tags()
+    g.sidebar_data = popular_posts, shuffled_tags
 
 
 # page for single post
@@ -325,15 +327,12 @@ def single_post(slug):
     # request previous and next posts
     prev_post = Posts.query.filter(Posts.date_posted < post.date_posted).first()
     next_post = Posts.query.filter(Posts.date_posted > post.date_posted).first()
-    popular_posts, shuffled_tags = get_posts_and_tags()
     # counting views
     post.num_of_views += 1
     # saving views
     db.session.commit()
     return render_template("single_post.html",
                            post=post,
-                           popular_posts=popular_posts,
-                           tags=shuffled_tags,
                            next_post=next_post,
                            prev_post=prev_post,
                            **context)
