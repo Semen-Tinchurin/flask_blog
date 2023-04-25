@@ -1,57 +1,18 @@
 from flask import Blueprint, flash, redirect, \
-    url_for, render_template, request, session, g
+    url_for, render_template, request, session
 import datetime
-from datetime import timedelta
-import logging
 from . import db, cache
 from .webmodels import Posts, Tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm
+from .functions import convert_created_time, logger, get_posts_and_tags
 from .constants import ADMIN_LOG, ADMIN_PASS
-from .config import LOG_FORMAT, DATE_FORMAT
-import random
+
 
 PAGINATION_NUM = 3
 NUMBER_OF_LATEST = 3
-NUMBER_OF_POPULAR = 3
 NUMBER_OF_POPULAR_TAGS = 3
 
 bp = Blueprint('routes', __name__)
-
-# configuring logging
-logging.basicConfig(
-    format=LOG_FORMAT,
-    datefmt=DATE_FORMAT,
-    level=logging.WARNING)
-
-# configure werkzeug logger
-wer_log = logging.getLogger('werkzeug')
-wer_log.setLevel(logging.ERROR)
-
-logger = logging.getLogger('routes')
-logger.setLevel(logging.INFO)
-
-
-def convert_created_time(*args, **kwargs):
-    """
-    Takes in post created date,
-    returns this date in user time
-    """
-    result = ''
-    try:
-        timezone = session.get("timezone")
-        sign = timezone[3]
-        hours = int(timezone[4:6])
-        minutes = int(timezone[7:])
-        if sign == '+':
-            delta = timedelta(hours=hours, minutes=minutes)
-            result = args[0] + delta
-        elif sign == '-':
-            delta = timedelta(hours=-hours, minutes=-minutes)
-            result = args[0] + delta
-    except Exception as ex:
-        logger.error(ex)
-        result = args[0]
-    return result.strftime('%d %B %Y, %H:%M')
 
 
 @bp.route('/timezone', methods=['POST'])
@@ -86,8 +47,6 @@ def admin():
     tags = Tags.query.all()
     # counting tags
     number_of_tags = len(tags)
-    # randomize output of the tags
-    shuffled_tags = random.sample(tags, number_of_tags)
     form = TagForm()
     if form.validate_on_submit():
         tag = Tags(tag_name=form.tag.data)
@@ -101,7 +60,7 @@ def admin():
     return render_template("adminpage.html",
                            posts=posts,
                            number_of_posts=number_of_posts,
-                           tags=shuffled_tags,
+                           tags=tags,
                            number_of_tags=number_of_tags,
                            form=form,
                            **context)
@@ -256,26 +215,18 @@ def get_posts():
                            **context)
 
 
-# returns popular posts and tags for sidebar
-@cache.cached(timeout=60)
-def get_posts_and_tags():
-    popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR).all()
-    # request all the tags from DB
-    tags = Tags.query.all()
-    # randomize output of the tags
-    shuffled_tags = random.sample(tags, len(tags))
-    return popular_posts, shuffled_tags
-
-
 @bp.route("/")
 def index():
     # creating context to pass convert_created_time function to the page
     context = {'convert': convert_created_time}
     logger.info('Went on site')
+    popular_posts, shuffled_tags = get_posts_and_tags()
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
     return render_template("index.html",
                            posts=posts,
+                           tags=shuffled_tags,
+                           popular_posts=popular_posts,
                            **context)
 
 
@@ -308,12 +259,6 @@ def page_not_found(error):
 # returns the most popular tags for footer
 # def get_popular_tags():
 #     pass
-
-
-@bp.before_request
-def load_sidebar_data():
-    popular_posts, shuffled_tags = get_posts_and_tags()
-    g.sidebar_data = popular_posts, shuffled_tags
 
 
 # page for single post
