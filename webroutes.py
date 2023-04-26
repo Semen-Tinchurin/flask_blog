@@ -196,12 +196,12 @@ def edit_post(id):
 def get_posts():
     # creating context to pass convert_created_time function to the page
     context = {'convert': convert_created_time}
-    logger.info('Requested all posts')
     # request all the posts from DB
     posts = Posts.query
     popular_posts, shuffled_tags = get_posts_and_tags()
     # adding pagination
     page = request.args.get('page')
+    logger.info(f'Requested all posts page {page}')
     if page and page.isdigit():
         page = int(page)
     else:
