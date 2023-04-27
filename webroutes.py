@@ -1,12 +1,12 @@
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
+from sqlalchemy import func
 import datetime
 from . import db, cache
-from .webmodels import Posts, Tags
+from .webmodels import Posts, Tags, post_tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm
 from .functions import convert_created_time, logger, get_posts_and_tags
 from .constants import ADMIN_LOG, ADMIN_PASS
-
 
 PAGINATION_NUM = 3
 NUMBER_OF_LATEST = 3
@@ -45,7 +45,12 @@ def admin():
     number_of_posts = posts.count()
     # request all the tags from DB
     tags = Tags.query.all()
-    # counting tags
+    # tags_with_post_count = db.session.query(Tags, func.count(Posts.id)). \
+    #     select_from(Tags). \
+    #     join(post_tags, Tags.id == post_tags.c.tag_id). \
+    #     join(Posts, Posts.id == post_tags.c.post_id). \
+    #     group_by(Tags.id). \
+    #     order_by(Tags.tag_name).all()
     number_of_tags = len(tags)
     form = TagForm()
     if form.validate_on_submit():
@@ -255,6 +260,18 @@ def page_not_found(error):
     logger.error('404 PAGE NOT FOUND')
     return render_template('404.html', title="PAGE NOT FOUND"), 404
 
+
+@bp.route('/test1')
+def test():
+    result = db.session.query(Tags.tag_name, func.sum(Posts.num_of_views)). \
+        select_from(Tags). \
+        join(post_tags). \
+        join(Posts). \
+        group_by(Tags.id). \
+        order_by(func.sum(Posts.num_of_views).desc()). \
+        limit(NUMBER_OF_POPULAR_TAGS)
+    return render_template('test_template.html',
+                           result=result)
 
 # returns the most popular tags for footer
 # def get_popular_tags():

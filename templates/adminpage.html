@@ -15,7 +15,7 @@
     <meta name="author" content="">
 
     <!-- Site Icons -->
-    <link rel="shortcut icon" href="static/images/fav.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="static/images/icon.png" type="image/x-icon"/>
     <link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
 
     <!-- Design fonts -->
@@ -99,7 +99,7 @@
                                 {% endfor %}
                             </td>
                             {% else %}
-                            <td>Tags</td>
+                            <td>-</td>
                             {% endif %}
                             <td><a href="{{ url_for('routes.edit_post', id=post.id)}}">
                                 <button type="submit" class="btn btn-warning">
@@ -134,6 +134,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Posts</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
@@ -141,7 +142,8 @@
                         {% for tag in tags %}
                         <tr>
                             <th scope="row">{{ tag.id }}</th>
-                            <td>{{ tag.tag_name}}</td>
+                            <td>{{ tag.tag_name }}</td>
+                            <td>{{tag.posts|count}}</td>
                             <td><a href="{{ url_for('routes.delete_tag', id=tag.id)}}">
                                 <button type="submit" class="btn btn-danger"
                                         onclick="return confirm('Are you shure to delete?')">
