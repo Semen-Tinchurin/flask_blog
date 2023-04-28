@@ -1,12 +1,14 @@
 from flask import session
+from sqlalchemy import func
 import logging
-from . import cache
-from .webmodels import Posts, Tags
+from . import db, cache
+from .webmodels import Posts, Tags, post_tags
 from .config import LOG_FORMAT, DATE_FORMAT
 from datetime import timedelta
 import random
 
 NUMBER_OF_POPULAR = 3
+NUMBER_OF_POPULAR_TAGS = 3
 
 
 # configuring logging
@@ -55,3 +57,16 @@ def get_posts_and_tags():
     # randomize output of the tags
     shuffled_tags = random.sample(tags, len(tags))
     return popular_posts, shuffled_tags
+
+
+# returns the most popular tags for footer
+@cache.cached(timeout=60)
+def get_popular_tags():
+    result = db.session.query(Tags.tag_name, func.sum(Posts.num_of_views)). \
+        select_from(Tags). \
+        join(post_tags). \
+        join(Posts). \
+        group_by(Tags.id). \
+        order_by(func.sum(Posts.num_of_views).desc()). \
+        limit(NUMBER_OF_POPULAR_TAGS)
+    return result

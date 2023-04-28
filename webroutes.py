@@ -1,16 +1,14 @@
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
-from sqlalchemy import func
 import datetime
 from . import db, cache
-from .webmodels import Posts, Tags, post_tags
+from .webmodels import Posts, Tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm
-from .functions import convert_created_time, logger, get_posts_and_tags
+from .functions import convert_created_time, logger, get_posts_and_tags, get_popular_tags
 from .constants import ADMIN_LOG, ADMIN_PASS
 
 PAGINATION_NUM = 3
 NUMBER_OF_LATEST = 3
-NUMBER_OF_POPULAR_TAGS = 3
 
 bp = Blueprint('routes', __name__)
 
@@ -117,11 +115,18 @@ def add_post():
     return render_template('add_post.html', form=form)
 
 
-# pass stuff to navbar
+# pass search form to navbar,
+# popular posts and shuffled tags to sidebar
+# and popular tags to footer
 @bp.context_processor
 def base():
     form = SearchForm()
-    return dict(form=form)
+    tags_for_footer = get_popular_tags()
+    popular_posts, shuffled_tags = get_posts_and_tags()
+    return dict(form=form,
+                tags_for_footer=tags_for_footer,
+                popular_posts=popular_posts,
+                shuffled_tags=shuffled_tags)
 
 
 @bp.route("/contacts")
@@ -203,7 +208,6 @@ def get_posts():
     context = {'convert': convert_created_time}
     # request all the posts from DB
     posts = Posts.query
-    popular_posts, shuffled_tags = get_posts_and_tags()
     # adding pagination
     page = request.args.get('page')
     logger.info(f'Requested all posts page {page}')
@@ -215,8 +219,6 @@ def get_posts():
     return render_template('posts.html',
                            posts=posts,
                            pages=pages,
-                           popular_posts=popular_posts,
-                           tags=shuffled_tags,
                            **context)
 
 
@@ -261,21 +263,11 @@ def page_not_found(error):
     return render_template('404.html', title="PAGE NOT FOUND"), 404
 
 
-@bp.route('/test1')
+@bp.route('/test')
 def test():
-    result = db.session.query(Tags.tag_name, func.sum(Posts.num_of_views)). \
-        select_from(Tags). \
-        join(post_tags). \
-        join(Posts). \
-        group_by(Tags.id). \
-        order_by(func.sum(Posts.num_of_views).desc()). \
-        limit(NUMBER_OF_POPULAR_TAGS)
+    result = get_popular_tags()
     return render_template('test_template.html',
                            result=result)
-
-# returns the most popular tags for footer
-# def get_popular_tags():
-#     pass
 
 
 # page for single post

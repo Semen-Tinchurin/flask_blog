@@ -22,11 +22,9 @@
                     <h2 class="widget-title">Popular Tags</h2>
                     <div class="link-widget">
                         <ul>
-                            <li><a href="#">Python<span>2</span></a></li>
-                            <li><a href="#">SQL<span>1</span></a></li>
-                            <li><a href="#">Linux<span>3</span></a></li>
-                            <li><a href="#">Interview questions<span>1</span></a></li>
-                            <li><a href="#">Django<span>1</span></a></li>
+                            {% for tag in tags_for_footer %}
+                            <li><a href="#">{{ tag.tag_name }}<span>2</span></a></li>
+                            {% endfor %}
                         </ul>
                     </div><!-- end link-widget -->
                 </div><!-- end widget -->
