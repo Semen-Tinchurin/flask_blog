@@ -23,7 +23,7 @@
                     <div class="link-widget">
                         <ul>
                             {% for tag in tags_for_footer %}
-                            <li><a href="#">{{ tag.tag_name }}<span>2</span></a></li>
+                            <li><a href="#">{{ tag.tag_name }}<span>{{ tag[1] }}</span></a></li>
                             {% endfor %}
                         </ul>
                     </div><!-- end link-widget -->

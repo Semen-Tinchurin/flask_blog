@@ -1,10 +1,7 @@
-import pickle
-
 from flask import session
 from sqlalchemy import func
 import logging
 from . import db
-from .webroutes import cache
 from .webmodels import Posts, Tags, post_tags
 from .config import LOG_FORMAT, DATE_FORMAT
 from datetime import timedelta
@@ -52,7 +49,6 @@ def convert_created_time(*args, **kwargs):
 
 
 # returns popular posts and tags for sidebar
-@cache.cached(timeout=60)
 def get_posts_and_tags():
     popular_posts = Posts.query.order_by(Posts.num_of_views.desc()).limit(NUMBER_OF_POPULAR).all()
     # request all the tags from DB
@@ -62,10 +58,9 @@ def get_posts_and_tags():
     return popular_posts, shuffled_tags
 
 
-# returns the most popular tags for footer
-# @cache.cached(timeout=60)
+# returns name and number of most popular tags for footer
 def get_popular_tags():
-    result = db.session.query(Tags.tag_name, func.sum(Posts.num_of_views)). \
+    result = db.session.query(Tags.tag_name, func.count(Posts.id)). \
         select_from(Tags). \
         join(post_tags). \
         join(Posts). \

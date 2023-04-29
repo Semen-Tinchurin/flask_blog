@@ -4,7 +4,8 @@ import datetime
 from . import db, cache
 from .webmodels import Posts, Tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm
-from .functions import convert_created_time, logger, get_posts_and_tags, get_popular_tags
+from .functions import convert_created_time, \
+    logger, get_posts_and_tags, get_popular_tags
 from .constants import ADMIN_LOG, ADMIN_PASS
 
 PAGINATION_NUM = 3
@@ -260,11 +261,12 @@ def page_not_found(error):
     return render_template('404.html', title="PAGE NOT FOUND"), 404
 
 
-# @bp.route('/test')
-# def test():
-#     result = get_popular_tags()
-#     return render_template('test_template.html',
-#                            result=result)
+@bp.route('/test1')
+def test():
+
+    result = get_popular_tags()
+    return render_template('test_template.html',
+                           result=result)
 
 
 # page for single post
