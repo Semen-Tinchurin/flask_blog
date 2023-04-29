@@ -227,13 +227,10 @@ def index():
     # creating context to pass convert_created_time function to the page
     context = {'convert': convert_created_time}
     logger.info('Went on site')
-    popular_posts, shuffled_tags = get_posts_and_tags()
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
     return render_template("index.html",
                            posts=posts,
-                           tags=shuffled_tags,
-                           popular_posts=popular_posts,
                            **context)
 
 
@@ -263,11 +260,11 @@ def page_not_found(error):
     return render_template('404.html', title="PAGE NOT FOUND"), 404
 
 
-@bp.route('/test')
-def test():
-    result = get_popular_tags()
-    return render_template('test_template.html',
-                           result=result)
+# @bp.route('/test')
+# def test():
+#     result = get_popular_tags()
+#     return render_template('test_template.html',
+#                            result=result)
 
 
 # page for single post
@@ -299,7 +296,6 @@ def search():
     context = {'convert': convert_created_time}
     form = SearchForm()
     posts = Posts.query
-    popular_posts, shuffled_tags = get_posts_and_tags()
     if form.validate_on_submit():
         # get data from submitted form
         searched = form.searched.data
@@ -311,8 +307,6 @@ def search():
                                form=form,
                                searched=searched,
                                posts=posts,
-                               popular_posts=popular_posts,
-                               tags=shuffled_tags,
                                **context)
     else:
         return redirect(url_for('index'))
@@ -324,14 +318,12 @@ def posts_by_tag(tag):
     context = {'convert': convert_created_time}
     logger.info(f'Posts by tag {tag}')
     posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
-    popular_posts = get_posts_and_tags()[0]
     # requesting tags
     tags = Tags.query.all()
     return render_template('by_tag.html',
                            tag=tag,
                            posts=posts,
                            tags=tags,
-                           popular_posts=popular_posts,
                            **context)
 
 
