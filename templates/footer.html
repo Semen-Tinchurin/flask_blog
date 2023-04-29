@@ -23,7 +23,7 @@
                     <div class="link-widget">
                         <ul>
                             {% for tag in tags_for_footer %}
-                            <li><a href="#">{{ tag.tag_name }}<span>{{ tag[1] }}</span></a></li>
+                            <li><a href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}">{{ tag.tag_name }}<span>{{ tag[1] }}</span></a></li>
                             {% endfor %}
                         </ul>
                     </div><!-- end link-widget -->
