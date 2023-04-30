@@ -2,11 +2,9 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 
 db = SQLAlchemy()
-# migrate = Migrate(app, db)
 
 
 # many to many relationship for Posts ang Tags models
@@ -23,7 +21,7 @@ class Posts(db.Model):
     date_posted = db.Column(db.DateTime, default=datetime.utcnow())
     slug = db.Column(db.String(100))
     num_of_views = db.Column(db.Integer, default=0)
-
+    image = db.Column(db.LargeBinary, nullable=True)
     tags = db.relationship('Tags',
                            secondary=post_tags,
                            lazy='subquery',

@@ -6,7 +6,7 @@
                 <div class="widget">
                     <div class="footer-text text-left">
                         <h2 class="widget-title" id="about">About</h2>
-                        <p> to my personal blog for junior developers! I'm Sam, a passionate Python
+                        <p>Welcome to my personal blog for junior developers! I'm Sam, a passionate Python
                             developer sharing knowledge and experience to help new coders navigate the challenges and
                             opportunities of software development. As a junior developer myself, I understand how
                             daunting it can be to learn new technologies, but also how rewarding it is to build
@@ -23,7 +23,8 @@
                     <div class="link-widget">
                         <ul>
                             {% for tag in tags_for_footer %}
-                            <li><a href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}">{{ tag.tag_name }}<span>{{ tag[1] }}</span></a></li>
+                            <li><a href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}">{{ tag.tag_name
+                                }}<span>{{ tag[1] }}</span></a></li>
                             {% endfor %}
                         </ul>
                     </div><!-- end link-widget -->
