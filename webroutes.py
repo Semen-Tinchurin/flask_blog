@@ -35,8 +35,6 @@ def set_timezone():
 
 @bp.route("/brick", methods=['GET', 'POST'])
 def admin():
-    # creating context to pass convert_created_time function to the page
-    context = {'convert': convert_created_time}
     logger.info('Went on the admin page')
     # request all the posts from DB
     posts = Posts.query.order_by(Posts.date_posted.desc())
@@ -44,12 +42,6 @@ def admin():
     number_of_posts = posts.count()
     # request all the tags from DB
     tags = Tags.query.all()
-    # tags_with_post_count = db.session.query(Tags, func.count(Posts.id)). \
-    #     select_from(Tags). \
-    #     join(post_tags, Tags.id == post_tags.c.tag_id). \
-    #     join(Posts, Posts.id == post_tags.c.post_id). \
-    #     group_by(Tags.id). \
-    #     order_by(Tags.tag_name).all()
     number_of_tags = len(tags)
     form = TagForm()
     if form.validate_on_submit():
@@ -66,8 +58,7 @@ def admin():
                            number_of_posts=number_of_posts,
                            tags=tags,
                            number_of_tags=number_of_tags,
-                           form=form,
-                           **context)
+                           form=form)
 
 
 # add post page
@@ -81,11 +72,13 @@ def add_post():
             post = Posts(title=form.title.data,
                          content=form.content.data,
                          slug=form.slug.data,
+                         # image=,
                          tags=Tags.query.filter(Tags.id.in_(form.tags.data)).all())
             # clear the form
             form.title.data = ''
             form.content.data = ''
             form.slug.data = ''
+            form.image.data = ''
             # add post data to database
             db.session.add(post)
             db.session.commit()
@@ -97,8 +90,6 @@ def add_post():
         finally:
             return redirect(url_for('routes.admin'))
     elif form.validate_on_submit() and form.preview.data:
-        # creating context to pass convert_created_time function to the page
-        context = {'convert': convert_created_time}
         date_posted = datetime.datetime.utcnow()
         title = form.title.data
         content = form.content.data
@@ -110,8 +101,7 @@ def add_post():
                                content=content,
                                tags=tags,
                                slug=slug,
-                               date_posted=date_posted,
-                               **context)
+                               date_posted=date_posted)
     # redirect to the page
     return render_template('add_post.html', form=form)
 
@@ -122,12 +112,15 @@ def add_post():
 @bp.context_processor
 def base():
     form = SearchForm()
+    # creating context to pass convert_created_time function to the page
+    context = {'convert': convert_created_time}
     tags_for_footer = get_popular_tags()
     popular_posts, shuffled_tags = get_posts_and_tags()
     return dict(form=form,
                 tags_for_footer=tags_for_footer,
                 popular_posts=popular_posts,
-                shuffled_tags=shuffled_tags)
+                shuffled_tags=shuffled_tags,
+                **context)
 
 
 @bp.route("/contacts")
@@ -205,8 +198,6 @@ def edit_post(id):
 
 @bp.route('/posts')
 def get_posts():
-    # creating context to pass convert_created_time function to the page
-    context = {'convert': convert_created_time}
     # request all the posts from DB
     posts = Posts.query
     # adding pagination
@@ -219,20 +210,16 @@ def get_posts():
     pages = posts.paginate(page=page, per_page=PAGINATION_NUM)
     return render_template('posts.html',
                            posts=posts,
-                           pages=pages,
-                           **context)
+                           pages=pages)
 
 
 @bp.route("/")
 def index():
-    # creating context to pass convert_created_time function to the page
-    context = {'convert': convert_created_time}
     logger.info('Went on site')
     # request last N posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).limit(NUMBER_OF_LATEST)
     return render_template("index.html",
-                           posts=posts,
-                           **context)
+                           posts=posts)
 
 
 @bp.errorhandler(500)
@@ -272,8 +259,6 @@ def test():
 # page for single post
 @bp.route("/posts/<slug>")
 def single_post(slug):
-    # creating context to pass convert_created_time function to the page
-    context = {'convert': convert_created_time}
     # request wanted post
     post = Posts.query.filter_by(slug=slug).first()
     logger.info(f'Requested post - {post.title}')
@@ -287,15 +272,12 @@ def single_post(slug):
     return render_template("single_post.html",
                            post=post,
                            next_post=next_post,
-                           prev_post=prev_post,
-                           **context)
+                           prev_post=prev_post)
 
 
 # search function
 @bp.route('/search', methods=['POST'])
 def search():
-    # creating context to pass convert_created_time function to the page
-    context = {'convert': convert_created_time}
     form = SearchForm()
     posts = Posts.query
     if form.validate_on_submit():
@@ -308,16 +290,13 @@ def search():
         return render_template('search.html',
                                form=form,
                                searched=searched,
-                               posts=posts,
-                               **context)
+                               posts=posts)
     else:
         return redirect(url_for('index'))
 
 
 @bp.route('/<tag>')
 def posts_by_tag(tag):
-    # creating context to pass convert_created_time function to the page
-    context = {'convert': convert_created_time}
     logger.info(f'Posts by tag {tag}')
     posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
     # requesting tags
@@ -325,8 +304,7 @@ def posts_by_tag(tag):
     return render_template('by_tag.html',
                            tag=tag,
                            posts=posts,
-                           tags=tags,
-                           **context)
+                           tags=tags)
 
 
 @bp.route("/useful_stuff")
