@@ -80,6 +80,7 @@
                             <th scope="col">Views</th>
                             <th scope="col">Slug</th>
                             <th scope="col">Tags</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
@@ -101,6 +102,7 @@
                             {% else %}
                             <td>-</td>
                             {% endif %}
+                            <td>{{ post.image }}</td>
                             <td><a href="{{ url_for('routes.edit_post', id=post.id)}}">
                                 <button type="submit" class="btn btn-warning">
                                     Edit <i class="fa fa-pencil"></i>
