@@ -9,7 +9,7 @@
             <div class="blog-list-widget">
                 <div class="list-group list-group-item list-group-item-action flex-column align-items-start">
                     <!-- Tags Start -->
-                    <!-- https://www.free-css.com/free-css-templates/page281/biznews -->
+<!--                     https://www.free-css.com/free-css-templates/page281/biznews -->
                     <div class="d-flex flex-wrap m-n1">
                         {% for tag in shuffled_tags %}
                         <a href="{{ url_for('routes.posts_by_tag', tag=tag.tag_name) }}" class="btn btn-sm btn-outline-secondary m-1">{{ tag.tag_name }}</a>
@@ -28,7 +28,7 @@
                     <a href="{{ url_for('routes.single_post', slug=popular.slug)}}"
                        class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="w-100 justify-content-between">
-                            <img src="static/images/codingg.jpg" alt="" class="img-fluid float-left">
+                            <img src="static/images/coding.jpg" alt="" class="img-fluid float-left">
                             <h5 class="mb-1">{{ popular.title }}</h5>
                             <small>{{ convert(popular.date_posted) }}</small>
                         </div>
