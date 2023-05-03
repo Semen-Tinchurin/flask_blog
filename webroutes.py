@@ -292,7 +292,7 @@ def search():
                                searched=searched,
                                posts=posts)
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('routes.index'))
 
 
 @bp.route('/<tag>')

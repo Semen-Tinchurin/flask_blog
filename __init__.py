@@ -6,7 +6,6 @@ from .config import Config
 from flask_migrate import Migrate
 
 # TODO fix posts in russian
-# TODO fix search when empty
 # TODO fix uploading image in post
 # TODO fix links in posts and sidebar
 # TODO checking if admin
