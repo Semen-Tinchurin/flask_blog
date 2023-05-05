@@ -1,5 +1,7 @@
 import pytest
 from .. import create_app, db
+from ..webroutes import NUMBER_OF_LATEST
+from ..functions import NUMBER_OF_POPULAR, NUMBER_OF_POPULAR_TAGS
 
 # commands to run tests:
 # python -m pytest
