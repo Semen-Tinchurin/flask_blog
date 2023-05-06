@@ -1,4 +1,4 @@
-from .conftest import NUMBER_OF_LATEST, NUMBER_OF_POPULAR, NUMBER_OF_POPULAR_TAGS
+from .conftest import NUMBER_OF_LATEST, NUMBER_OF_POPULAR, NUMBER_OF_POPULAR_TAGS, PAGINATION_NUM
 
 
 def test_index(client):
@@ -54,3 +54,12 @@ def test_sidebar(client):
     assert b'Tags' in response.data
     assert b'Popular Posts' in response.data
     assert b'Recent Reviews' in response.data
+
+
+def test_posts(client):
+    response = client.get("/posts")
+    posts = response.data.count(b'<div class="blog-box row">')
+    assert response.status_code == 200
+    assert b'<nav aria-label="Page navigation">' in response.data
+    assert b'<h1 align="center">All Posts</h1>' in response.data
+    assert posts == PAGINATION_NUM
