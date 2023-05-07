@@ -250,10 +250,9 @@ def page_not_found(error):
 
 @bp.route('/test1')
 def test():
-
-    result = get_popular_tags()
+    slugs = Posts.query.with_entities(Posts.slug).all()
     return render_template('test_template.html',
-                           result=result)
+                           result=slugs)
 
 
 # page for single post

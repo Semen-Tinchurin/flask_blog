@@ -1,4 +1,5 @@
-from .conftest import NUMBER_OF_LATEST, NUMBER_OF_POPULAR, NUMBER_OF_POPULAR_TAGS, PAGINATION_NUM
+from .conftest import NUMBER_OF_LATEST, PAGINATION_NUM, Posts, \
+    Tags, NUMBER_OF_POPULAR, NUMBER_OF_POPULAR_TAGS, app
 
 
 def test_index(client):
@@ -63,3 +64,14 @@ def test_posts(client):
     assert b'<nav aria-label="Page navigation">' in response.data
     assert b'<h1 align="center">All Posts</h1>' in response.data
     assert posts == PAGINATION_NUM
+
+
+def test_single_post(client):
+    # slugs = Posts.query.with_entities(Posts.slug).all()
+    # for slug in slugs:
+    #     response = client.get(f"/posts/{slug}")
+    #     assert response.status_code == 200
+    response = client.get("/posts/heap-sort")
+    assert response.status_code == 200
+    assert b'<div class="blog-content">' in response.data
+    assert b'<div class="blog-meta big-meta">' in response.data
