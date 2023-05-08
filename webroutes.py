@@ -3,7 +3,7 @@ from flask import Blueprint, flash, redirect, \
 import datetime
 from . import db, cache
 from .webmodels import Posts, Tags
-from .webforms import PostForm, TagForm, SearchForm, LoginForm
+from .webforms import PostForm, TagForm, SearchForm, LoginForm, LetterForm
 from .functions import convert_created_time, \
     logger, get_posts_and_tags, get_popular_tags
 from .constants import ADMIN_LOG, ADMIN_PASS
@@ -125,7 +125,8 @@ def base():
 
 @bp.route("/contacts")
 def contacts():
-    return render_template("contacts.html")
+    form = LetterForm()
+    return render_template("contacts.html", form=form)
 
 
 @bp.route('/delete_<int:id>', methods=['GET', 'POST'])

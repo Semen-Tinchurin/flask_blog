@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from wtforms import StringField, SubmitField, PasswordField, FileField, SelectMultipleField
+from wtforms import StringField, SubmitField, PasswordField, FileField, SelectMultipleField, TextAreaField
 from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditorField
 
@@ -30,6 +30,14 @@ class LoginForm(FlaskForm):
     login = StringField('Login', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log in')
+
+
+class LetterForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email address', validators=[DataRequired()])
+    subject = StringField('Subject', validators=[DataRequired()])
+    message = TextAreaField('Message', validators=[DataRequired()])
+    submit = SubmitField('Send')
 
 # class UserForm(FlaskForm):
 #     user_name = StringField('Enter name', validators=[DataRequired()])
