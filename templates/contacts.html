@@ -3,14 +3,16 @@
 {% block content %}
 {{ super() }}
 
-<div class="page-title lb single-wrapper">
+<div class="page-title lb single-wrapper" xmlns="http://www.w3.org/1999/html">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                <h2><i class="fa fa-envelope-open-o bg-orange"></i> Contact us <small
-                        class="hidden-xs-down hidden-sm-down"> Email me if you have any questions about the content of
-                    articles or suggestions for
-                    improving the content of the site</small>
+                <h2><i class="fa fa-envelope-open-o"></i> Contact us
+                    <hr class="invis">
+                    <small class="hidden-xs-down hidden-sm-down"> Email me if you have any questions about the content
+                        of
+                        articles or suggestions for
+                        improving the content of the site</small>
                 </h2>
             </div><!-- end col -->
             <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
@@ -40,17 +42,13 @@
                         <div class="col-lg-12">
                             <form method="POST">
                                 {{ form.hidden_tag() }}
-                                {{ form.name.label(class="form-label") }}
-                                {{ form.name(class="form-control") }}
+                                {{ form.name(class="form-control", placeholder='Name') }}
                                 <br/>
-                                {{ form.email.label(class="form-label") }}
-                                {{ form.email(class="form-control") }}
+                                {{ form.email(class="form-control", placeholder='Email') }}
                                 <br/>
-                                {{ form.subject.label(class="form-label") }}
-                                {{ form.subject(class="form-control") }}
+                                {{ form.subject(class="form-control", placeholder='Subject') }}
                                 <br/>
-                                {{ form.message.label(class="form-label") }}
-                                {{ form.message(class="form-control", rows="10") }}
+                                {{ form.message(class="form-control", rows="10", placeholder='Message') }}
                                 <br/>
                                 {{ form.submit(class="btn btn-success") }}
                             </form>
