@@ -123,9 +123,20 @@ def base():
                 **context)
 
 
-@bp.route("/contacts")
+@bp.route("/contacts", methods=['GET', 'POST'])
 def contacts():
     form = LetterForm()
+    if form.validate_on_submit():
+        logger.info(form.name.data)
+        logger.info(form.email.data)
+        logger.info(form.subject.data)
+        logger.info(form.message.data)
+        flash('Your message was sent to the admin!')
+        form.name.data = ''
+        form.email.data = ''
+        form.subject.data = ''
+        form.message.data = ''
+        return render_template("contacts.html", form=form)
     return render_template("contacts.html", form=form)
 
 

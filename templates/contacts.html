@@ -24,28 +24,36 @@
 </div><!-- end page-title -->
 
 <section class="section wb">
+    {% for msg in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{msg}}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="page-wrapper">
                     <div class="row">
                         <div class="col-lg-12">
-                                <form method="POST">
-                                    {{ form.hidden_tag() }}
-                                    {{ form.name.label(class="form-label") }}
-                                    {{ form.name(class="form-control") }}
-                                    <br/>
-                                    {{ form.email.label(class="form-label") }}
-                                    {{ form.email(class="form-control") }}
-                                    <br/>
-                                    {{ form.subject.label(class="form-label") }}
-                                    {{ form.subject(class="form-control") }}
-                                    <br/>
-                                    {{ form.message.label(class="form-label") }}
-                                    {{ form.message(class="form-control", rows="10") }}
-                                    <br/>
-                                    {{ form.submit(class="btn btn-success", value="Send") }}
-                                </form>
+                            <form method="POST">
+                                {{ form.hidden_tag() }}
+                                {{ form.name.label(class="form-label") }}
+                                {{ form.name(class="form-control") }}
+                                <br/>
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control") }}
+                                <br/>
+                                {{ form.subject.label(class="form-label") }}
+                                {{ form.subject(class="form-control") }}
+                                <br/>
+                                {{ form.message.label(class="form-label") }}
+                                {{ form.message(class="form-control", rows="10") }}
+                                <br/>
+                                {{ form.submit(class="btn btn-success") }}
+                            </form>
 
                         </div>
                     </div>
