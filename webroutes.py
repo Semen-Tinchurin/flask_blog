@@ -5,7 +5,7 @@ from . import db, cache
 from .webmodels import Posts, Tags
 from .webforms import PostForm, TagForm, SearchForm, LoginForm, LetterForm
 from .functions import convert_created_time, \
-    logger, get_posts_and_tags, get_popular_tags
+    logger, get_posts_and_tags, get_popular_tags, send_email
 from .constants import ADMIN_LOG, ADMIN_PASS
 
 PAGINATION_NUM = 3
@@ -127,10 +127,11 @@ def base():
 def contacts():
     form = LetterForm()
     if form.validate_on_submit():
-        logger.info(form.name.data)
-        logger.info(form.email.data)
-        logger.info(form.subject.data)
-        logger.info(form.message.data)
+        name = form.name.data
+        email = form.email.data
+        subject = form.subject.data
+        message = form.message.data
+        send_email(name=name, email=email, subject=subject, message=message)
         flash('Your message was sent to the admin!')
         form.name.data = ''
         form.email.data = ''

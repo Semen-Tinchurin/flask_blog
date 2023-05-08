@@ -1,11 +1,13 @@
 from flask import session
 from sqlalchemy import func
 import logging
+import random
+from datetime import timedelta
+import smtplib
 from . import db
 from .webmodels import Posts, Tags, post_tags
 from .config import LOG_FORMAT, DATE_FORMAT
-from datetime import timedelta
-import random
+from .constants import EMAIL, PASSWORD, APP_PASSWORD
 
 NUMBER_OF_POPULAR = 3
 NUMBER_OF_POPULAR_TAGS = 3
@@ -68,3 +70,18 @@ def get_popular_tags():
         order_by(func.sum(Posts.num_of_views).desc()). \
         limit(NUMBER_OF_POPULAR_TAGS)
     return result
+
+
+def send_email(name, email, subject, message):
+    # email configuration
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587
+
+    # create the email message
+    msg = f"Subject: {subject}\n\nName: {name}\nEmail: {email}\n\n{message}"
+
+    # send the email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(EMAIL, APP_PASSWORD)
+        server.sendmail(EMAIL, EMAIL, msg)
