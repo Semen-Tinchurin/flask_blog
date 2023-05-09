@@ -7,7 +7,7 @@ import smtplib
 from . import db
 from .webmodels import Posts, Tags, post_tags
 from .config import LOG_FORMAT, DATE_FORMAT
-from .constants import EMAIL, PASSWORD, APP_PASSWORD
+from .constants import EMAIL, APP_PASSWORD
 
 NUMBER_OF_POPULAR = 3
 NUMBER_OF_POPULAR_TAGS = 3

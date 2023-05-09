@@ -127,17 +127,23 @@ def base():
 def contacts():
     form = LetterForm()
     if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        subject = form.subject.data
-        message = form.message.data
-        send_email(name=name, email=email, subject=subject, message=message)
-        flash('Your message was sent to the admin!')
-        form.name.data = ''
-        form.email.data = ''
-        form.subject.data = ''
-        form.message.data = ''
-        return render_template("contacts.html", form=form)
+        try:
+            name = form.name.data
+            email = form.email.data
+            subject = form.subject.data
+            message = form.message.data
+            send_email(name=name, email=email, subject=subject, message=message)
+            logger.info(f'User {name} sent an email')
+            flash('Your message was sent to the admin!')
+            form.name.data = ''
+            form.email.data = ''
+            form.subject.data = ''
+            form.message.data = ''
+        except Exception as ex:
+            logger.error(ex)
+            flash('Something gone wrong, try again...')
+        finally:
+            return render_template("contacts.html", form=form)
     return render_template("contacts.html", form=form)
 
 
