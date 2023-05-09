@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 
 # TODO fix posts in russian
 # TODO fix uploading image in post
-# TODO send letters from site
+# TODO thinc about Recent Reviews, You may also like and leave a reply
 # TODO fix links in posts and sidebar
 # TODO checking if admin
 # TODO async functions

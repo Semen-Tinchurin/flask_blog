@@ -520,6 +520,7 @@ legend {
 
 input[type="search"] {
   -webkit-appearance: none;
+  border-color: #19295c;
 }
 
 output {
@@ -2922,13 +2923,13 @@ fieldset[disabled] a.btn {
   color: #5bc0de;
   background-image: none;
   background-color: transparent;
-  border-color: #5bc0de;
+  border-color: #19295c;
 }
 
 .btn-outline-info:hover {
   color: #fff;
-  background-color: #5bc0de;
-  border-color: #5bc0de;
+  background-color: #19295c;
+  border-color: #19295c;
 }
 
 .btn-outline-info:focus, .btn-outline-info.focus {
