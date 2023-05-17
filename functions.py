@@ -7,7 +7,7 @@ import smtplib
 from . import db
 from .webmodels import Posts, Tags, post_tags
 from .config import LOG_FORMAT, DATE_FORMAT
-from .constants import EMAIL, APP_PASSWORD
+from .constants import EMAIL, APP_PASSWORD, SMTP_PORT, SMTP_SERVER
 
 NUMBER_OF_POPULAR = 3
 NUMBER_OF_POPULAR_TAGS = 3
@@ -73,15 +73,11 @@ def get_popular_tags():
 
 
 def send_email(name, email, subject, message):
-    # email configuration
-    smtp_server = 'smtp.gmail.com'
-    smtp_port = 587
-
     # create the email message
     msg = f"Subject: {subject}\n\nName: {name}\nEmail: {email}\n\n{message}"
 
     # send the email
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
         server.starttls()
         server.login(EMAIL, APP_PASSWORD)
         server.sendmail(EMAIL, EMAIL, msg)

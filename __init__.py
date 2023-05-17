@@ -5,6 +5,8 @@ from .webmodels import db
 from .config import Config
 from flask_migrate import Migrate
 
+# TODO Pattern matching, avoid of multiple else statements
+# TODO fix and test convert time function
 # TODO fix posts in russian
 # TODO fix uploading image in post
 # TODO thinc about Recent Reviews, You may also like and leave a reply
