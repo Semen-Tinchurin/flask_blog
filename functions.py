@@ -12,7 +12,6 @@ from .constants import EMAIL, APP_PASSWORD, SMTP_PORT, SMTP_SERVER
 NUMBER_OF_POPULAR = 3
 NUMBER_OF_POPULAR_TAGS = 3
 
-
 # configuring logging
 logging.basicConfig(
     format=LOG_FORMAT,
@@ -26,6 +25,11 @@ wer_log.setLevel(logging.ERROR)
 logger = logging.getLogger('routes')
 logger.setLevel(logging.INFO)
 
+func_dict = {
+    '+': lambda hours, minutes: timedelta(hours=hours, minutes=minutes),
+    '-': lambda hours, minutes: timedelta(hours=-hours, minutes=-minutes),
+}
+
 
 def convert_created_time(*args, **kwargs):
     """
@@ -38,12 +42,8 @@ def convert_created_time(*args, **kwargs):
         sign = timezone[3]
         hours = int(timezone[4:6])
         minutes = int(timezone[7:])
-        if sign == '+':
-            delta = timedelta(hours=hours, minutes=minutes)
-            result = args[0] + delta
-        elif sign == '-':
-            delta = timedelta(hours=-hours, minutes=-minutes)
-            result = args[0] + delta
+        delta = func_dict[sign](hours, minutes)
+        result = args[0] + delta
     except Exception as ex:
         logger.error(ex)
         result = args[0]
