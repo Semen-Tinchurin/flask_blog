@@ -29,7 +29,7 @@ def set_timezone():
         logger.info(timezone)
     except Exception as ex:
         logger.info(ex)
-        session['timezone'] = 'UTC +0'
+        session['timezone'] = 'UTC -00:00'
     return timezone
 
 

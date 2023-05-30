@@ -71,7 +71,7 @@ def test_single_post(client):
     # for slug in slugs:
     #     response = client.get(f"/posts/{slug}")
     #     assert response.status_code == 200
-    response = client.get("/posts/heap-sort")
+    response = client.get("/posts/s")
     assert response.status_code == 200
     assert b'<div class="blog-content">' in response.data
     assert b'<div class="blog-meta big-meta">' in response.data

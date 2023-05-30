@@ -14,7 +14,7 @@
 <form method="POST">
     {{ form.hidden_tag() }}
     {{ form.login.label(class="form-label") }}
-    {{ form.login(class="form-control") }}
+    {{ form.login(class="form-control", autocomplete="off") }}
     <br/>
     {{ form.password.label(class="form-label") }}
     {{ form.password(class="form-control") }}
