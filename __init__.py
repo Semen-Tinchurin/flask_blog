@@ -1,11 +1,14 @@
 from flask import Flask
+from flask_admin import Admin
+from flask_login import LoginManager
 from flask_caching import Cache
 from flask_ckeditor import CKEditor
-from .webmodels import db
+from .webmodels import db, Users
 from .config import Config
 from flask_migrate import Migrate
 
 # TODO Pattern matching, avoid of multiple else statements
+# TODO test for only one user
 # TODO fix and test convert time function
 # TODO fix posts in russian
 # TODO fix uploading image in post
@@ -37,6 +40,13 @@ def create_app():
     from .webroutes import bp
     app.register_blueprint(bp)
     cache.init_app(app)
+    admin = Admin(app)
+    login_manager = LoginManager(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return Users.query.get(int(user_id))
+
     return app
 
 

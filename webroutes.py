@@ -1,17 +1,35 @@
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
+from flask_login import login_required
 import datetime
 from . import db, cache
-from .webmodels import Posts, Tags
+from .webmodels import Posts, Tags, Users
 from .webforms import PostForm, TagForm, SearchForm, LoginForm, LetterForm
 from .functions import convert_created_time, \
     logger, get_posts_and_tags, get_popular_tags, send_email
-from .constants import ADMIN_LOG, ADMIN_PASS
 
 PAGINATION_NUM = 3
 NUMBER_OF_LATEST = 3
 
 bp = Blueprint('routes', __name__)
+
+# routes that do not require authentication
+allowed_routes = [
+    'routes.index',
+    'routes.contacts',
+    'routes.get_post',
+    'routes.login',
+    'routes.single_post',
+    'routes.search',
+    'routes.posts_by_tag',
+]
+
+
+@bp.before_request
+def require_login():
+    if request.endpoint not in allowed_routes and 'user_id' not in session:
+        logger.info('Redirecting to the login page...')
+        return redirect(url_for('routes.login'))
 
 
 @bp.route('/timezone', methods=['POST'])
@@ -34,6 +52,7 @@ def set_timezone():
 
 
 @bp.route("/brick", methods=['GET', 'POST'])
+@login_required
 def admin():
     logger.info('Went on the admin page')
     # request all the posts from DB
@@ -63,6 +82,7 @@ def admin():
 
 # add post page
 @bp.route("/add-post", methods=['GET', 'POST'])
+@login_required
 def add_post():
     logger.info('Went on the add post page')
     form = PostForm()
@@ -148,6 +168,7 @@ def contacts():
 
 
 @bp.route('/delete_<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_post(id):
     logger.info('Went on the delete page')
     # request post that we need to delete
@@ -168,6 +189,7 @@ def delete_post(id):
 
 
 @bp.route('/delete_tag_<int:id>', methods=['GET', 'POST'])
+@login_required
 def delete_tag(id):
     logger.info('Went on the delete tag page')
     # request tag that we need to delete
@@ -188,6 +210,7 @@ def delete_tag(id):
 
 
 @bp.route('/edit_post_<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_post(id):
     # request the post that we need to edit
     post = Posts.query.get_or_404(id)
@@ -251,10 +274,17 @@ def internal_server_error(error):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.login.data == ADMIN_LOG and form.password.data == ADMIN_PASS:
+        username = form.login.data
+        password = form.password.data
+        user = Users.query.filter_by(name=username).first()
+        if user and user.verify_password(password=password):
+            session['user_id'] = user.id
             flash('You are logged in as Admin')
-            # app.logger.info('Logged in as Admin')
-            return redirect(url_for('admin'))
+            logger.info('Logged in as Admin')
+            return redirect(url_for('routes.admin'))
+        else:
+            flash('Invalid username or password. Please try again.')
+            return redirect(url_for('routes.login', form=form))
     form.login.data = ''
     form.password.data = ''
     return render_template('login.html', form=form)

@@ -44,8 +44,8 @@ class Users(db.Model, UserMixin):
     name = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False, unique=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
-    color = db.Column(db.String(50))
     password_hash = db.Column(db.String(128))
+    # is_admin = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):
