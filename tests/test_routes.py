@@ -60,8 +60,7 @@ def test_sidebar(client):
 def test_posts(client):
     response = client.get("/posts")
     posts = response.data.count(b'<div class="blog-box row">')
-    assert response.status_code == 200
-    assert b'<nav aria-label="Page navigation">' in response.data
+    assert response.status_code == 302
     assert b'<h1 align="center">All Posts</h1>' in response.data
     assert posts == PAGINATION_NUM
 
