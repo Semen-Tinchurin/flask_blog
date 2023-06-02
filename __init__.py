@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 
 # TODO Pattern matching, avoid of multiple else statements
 # TODO test for only one user
+# TODO check only existing tags in posts_by_tag func
 # TODO fix and test convert time function
 # TODO fix posts in russian
 # TODO fix uploading image in post

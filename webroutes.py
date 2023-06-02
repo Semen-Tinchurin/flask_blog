@@ -27,9 +27,15 @@ allowed_routes = [
 
 @bp.before_request
 def require_login():
-    if request.endpoint not in allowed_routes and 'user_id' not in session:
-        logger.info('Redirecting to the login page...')
-        return redirect(url_for('routes.login'))
+    logger.info(request.endpoint, session.values())
+    if request.endpoint not in allowed_routes:
+        logger.info('requested page is not in allowed routes!!!')
+        if 'user_id' not in session:
+            logger.info('Redirecting to the login page...')
+            return redirect(url_for('routes.login'))
+        else:
+            logger.info('Redirecting to the admin page...')
+            return redirect(url_for(request.endpoint))
 
 
 @bp.route('/timezone', methods=['POST'])
@@ -46,13 +52,12 @@ def set_timezone():
         session['timezone'] = timezone
         logger.info(timezone)
     except Exception as ex:
-        logger.info(ex)
+        logger.error('set timezone: ', ex)
         session['timezone'] = 'UTC -00:00'
     return timezone
 
 
 @bp.route("/brick", methods=['GET', 'POST'])
-@login_required
 def admin():
     logger.info('Went on the admin page')
     # request all the posts from DB
@@ -106,7 +111,7 @@ def add_post():
             flash('Post submitted successfully!')
             logger.info(f'Post {post.title} added')
         except Exception as ex:
-            logger.error(ex)
+            logger.error('app_post: ', ex)
         finally:
             return redirect(url_for('routes.admin'))
     elif form.validate_on_submit() and form.preview.data:
@@ -160,7 +165,7 @@ def contacts():
             form.subject.data = ''
             form.message.data = ''
         except Exception as ex:
-            logger.error(ex)
+            logger.error('contacts: ', ex)
             flash('Something gone wrong, try again...')
         finally:
             return render_template("contacts.html", form=form)
@@ -181,7 +186,7 @@ def delete_post(id):
         logger.info(f'Post {post_to_delete.title} deleted')
 
     except Exception as ex:
-        logger.error(ex)
+        logger.error('delete_post: ', ex)
         flash(f'Something is wrong! Error: {ex}')
 
     finally:
@@ -202,7 +207,7 @@ def delete_tag(id):
         logger.info(f'Tag {tag_to_delete.tag_name} deleted')
 
     except Exception as ex:
-        logger.error(ex)
+        logger.error('delete tag: ', ex)
         flash(f'Something is wrong! Error: {ex}')
 
     finally:
@@ -288,6 +293,12 @@ def login():
     form.login.data = ''
     form.password.data = ''
     return render_template('login.html', form=form)
+
+
+@bp.route('/logout')
+def logout():
+    session.pop('user_id')
+    return redirect(url_for('routes.index'))
 
 
 # Custom 404 error page
