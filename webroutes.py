@@ -25,17 +25,18 @@ allowed_routes = [
 ]
 
 
-@bp.before_request
-def require_login():
-    logger.info(request.endpoint, session.values())
-    if request.endpoint not in allowed_routes:
-        logger.info('requested page is not in allowed routes!!!')
-        if 'user_id' not in session:
-            logger.info('Redirecting to the login page...')
-            return redirect(url_for('routes.login'))
-        else:
-            logger.info('Redirecting to the admin page...')
-            return redirect(url_for(request.endpoint))
+#
+# @bp.before_request
+# def require_login():
+#     logger.info(request.endpoint, session.values())
+#     if request.endpoint not in allowed_routes:
+#         logger.info('requested page is not in allowed routes!!!')
+#         if 'user_id' not in session:
+#             logger.info('Redirecting to the login page...')
+#             return redirect(url_for('routes.login'))
+#         else:
+#             logger.info('Redirecting to the admin page...')
+#             return redirect(url_for(request.endpoint))
 
 
 @bp.route('/timezone', methods=['POST'])
@@ -59,30 +60,33 @@ def set_timezone():
 
 @bp.route("/brick", methods=['GET', 'POST'])
 def admin():
-    logger.info('Went on the admin page')
-    # request all the posts from DB
-    posts = Posts.query.order_by(Posts.date_posted.desc())
-    # counting posts
-    number_of_posts = posts.count()
-    # request all the tags from DB
-    tags = Tags.query.all()
-    number_of_tags = len(tags)
-    form = TagForm()
-    if form.validate_on_submit():
-        tag = Tags(tag_name=form.tag.data)
-        form.tag.data = ''
-        # saving new tag
-        db.session.add(tag)
-        db.session.commit()
-        flash('Tag added!')
-        logger.info(f'Tag {tag.tag_name} added')
-        return redirect(url_for('routes.admin'))
-    return render_template("adminpage.html",
-                           posts=posts,
-                           number_of_posts=number_of_posts,
-                           tags=tags,
-                           number_of_tags=number_of_tags,
-                           form=form)
+    if 'user_id' in session:
+        logger.info('Went on the admin page')
+        # request all the posts from DB
+        posts = Posts.query.order_by(Posts.date_posted.desc())
+        # counting posts
+        number_of_posts = posts.count()
+        # request all the tags from DB
+        tags = Tags.query.all()
+        number_of_tags = len(tags)
+        form = TagForm()
+        if form.validate_on_submit():
+            tag = Tags(tag_name=form.tag.data)
+            form.tag.data = ''
+            # saving new tag
+            db.session.add(tag)
+            db.session.commit()
+            flash('Tag added!')
+            logger.info(f'Tag {tag.tag_name} added')
+            return redirect(url_for('routes.admin'))
+        return render_template("adminpage.html",
+                               posts=posts,
+                               number_of_posts=number_of_posts,
+                               tags=tags,
+                               number_of_tags=number_of_tags,
+                               form=form)
+    else:
+        return redirect(url_for('routes.login'))
 
 
 # add post page

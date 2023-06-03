@@ -52,6 +52,11 @@
                     {% block content %}
                     <hr class="invis">
                     <h1 align="center">ADMIN PAGE</h1>
+                    <div align="right"><a href="{{ url_for('routes.logout')}}">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you shure to log out?')">
+                            Log out <i class="fa fa-sign-out"></i></button>
+                    </a></div>
                     <hr class="invis">
 
                     {% for msg in get_flashed_messages() %}
