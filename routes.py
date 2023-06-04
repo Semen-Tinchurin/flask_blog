@@ -3,8 +3,8 @@ from flask import Blueprint, flash, redirect, \
 from functools import wraps
 import datetime
 from . import db, cache
-from .webmodels import Posts, Tags, Users
-from .webforms import PostForm, TagForm, SearchForm, LoginForm, LetterForm
+from .models import Posts, Tags, Users
+from .forms import PostForm, TagForm, SearchForm, LoginForm, LetterForm
 from .functions import convert_created_time, \
     logger, get_posts_and_tags, get_popular_tags, send_email
 
@@ -34,7 +34,9 @@ def custom_login_required(func):
                 return func(*args, **kwargs)
             else:
                 return redirect(url_for('routes.login'))
+
         return wrapper
+
     return decorator(func)
 
 
@@ -205,7 +207,6 @@ def delete_tag(id):
         db.session.commit()
         flash('Tag deleted')
         logger.info(f'Tag {tag_to_delete.tag_name} deleted')
-
     except Exception as ex:
         logger.error('delete tag: ', ex)
         flash(f'Something is wrong! Error: {ex}')

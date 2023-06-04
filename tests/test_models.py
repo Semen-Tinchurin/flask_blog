@@ -1,4 +1,4 @@
-import webmodels
+import models
 
 
 def test_new_post():
