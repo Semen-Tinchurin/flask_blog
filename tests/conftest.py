@@ -1,9 +1,9 @@
 import pytest
 from .. import create_app, db
-from ..webroutes import NUMBER_OF_LATEST, PAGINATION_NUM
+from ..routes import NUMBER_OF_LATEST, PAGINATION_NUM
 from ..functions import NUMBER_OF_POPULAR, \
     NUMBER_OF_POPULAR_TAGS, convert_created_time
-from ..webmodels import Posts, Tags
+from ..models import Posts, Tags
 
 
 # commands to run tests:

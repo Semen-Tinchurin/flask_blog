@@ -5,7 +5,7 @@ import random
 from datetime import timedelta
 import smtplib
 from . import db
-from .webmodels import Posts, Tags, post_tags
+from .models import Posts, Tags, post_tags
 from .config import LOG_FORMAT, DATE_FORMAT
 from .constants import EMAIL, APP_PASSWORD, SMTP_PORT, SMTP_SERVER
 
