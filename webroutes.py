@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, redirect, \
     url_for, render_template, request, session
-from flask_login import login_required
+from functools import wraps
 import datetime
 from . import db, cache
 from .webmodels import Posts, Tags, Users
@@ -25,18 +25,17 @@ allowed_routes = [
 ]
 
 
-#
-# @bp.before_request
-# def require_login():
-#     logger.info(request.endpoint, session.values())
-#     if request.endpoint not in allowed_routes:
-#         logger.info('requested page is not in allowed routes!!!')
-#         if 'user_id' not in session:
-#             logger.info('Redirecting to the login page...')
-#             return redirect(url_for('routes.login'))
-#         else:
-#             logger.info('Redirecting to the admin page...')
-#             return redirect(url_for(request.endpoint))
+# custom login required decorator
+def custom_login_required(func):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if 'user_id' in session:
+                return func(*args, **kwargs)
+            else:
+                return redirect(url_for('routes.login'))
+        return wrapper
+    return decorator(func)
 
 
 @bp.route('/timezone', methods=['POST'])
@@ -54,87 +53,83 @@ def set_timezone():
         logger.info(timezone)
     except Exception as ex:
         logger.error('set timezone: ', ex)
-        session['timezone'] = 'UTC -00:00'
+        session['timezone'] = 'UTC-00:00'
     return timezone
 
 
 @bp.route("/brick", methods=['GET', 'POST'])
+@custom_login_required
 def admin():
-    if 'user_id' in session:
-        logger.info('Went on the admin page')
-        # request all the posts from DB
-        posts = Posts.query.order_by(Posts.date_posted.desc())
-        # counting posts
-        number_of_posts = posts.count()
-        # request all the tags from DB
-        tags = Tags.query.all()
-        number_of_tags = len(tags)
-        form = TagForm()
-        if form.validate_on_submit():
-            tag = Tags(tag_name=form.tag.data)
-            form.tag.data = ''
-            # saving new tag
-            db.session.add(tag)
-            db.session.commit()
-            flash('Tag added!')
-            logger.info(f'Tag {tag.tag_name} added')
-            return redirect(url_for('routes.admin'))
-        return render_template("adminpage.html",
-                               posts=posts,
-                               number_of_posts=number_of_posts,
-                               tags=tags,
-                               number_of_tags=number_of_tags,
-                               form=form)
-    else:
-        return redirect(url_for('routes.login'))
+    logger.info('Went on the admin page')
+    # request all the posts from DB
+    posts = Posts.query.order_by(Posts.date_posted.desc())
+    # counting posts
+    number_of_posts = posts.count()
+    # request all the tags from DB
+    tags = Tags.query.all()
+    number_of_tags = len(tags)
+    form = TagForm()
+    if form.validate_on_submit():
+        tag = Tags(tag_name=form.tag.data)
+        form.tag.data = ''
+        # saving new tag
+        db.session.add(tag)
+        db.session.commit()
+        flash('Tag added!')
+        logger.info(f'Tag {tag.tag_name} added')
+        return redirect(url_for('routes.admin'))
+    return render_template("adminpage.html",
+                           posts=posts,
+                           number_of_posts=number_of_posts,
+                           tags=tags,
+                           number_of_tags=number_of_tags,
+                           form=form)
 
 
 # add post page
 @bp.route("/add-post", methods=['GET', 'POST'])
+@custom_login_required
 def add_post():
-    if 'user_id' in session:
-        logger.info('Went on the add post page')
-        form = PostForm()
-        form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
-        if form.validate_on_submit() and form.submit.data:
-            try:
-                post = Posts(title=form.title.data,
-                             content=form.content.data,
-                             slug=form.slug.data,
-                             # image=,
-                             tags=Tags.query.filter(Tags.id.in_(form.tags.data)).all())
-                # clear the form
-                form.title.data = ''
-                form.content.data = ''
-                form.slug.data = ''
-                form.image.data = ''
-                # add post data to database
-                db.session.add(post)
-                db.session.commit()
-                # return a message
-                flash('Post submitted successfully!')
-                logger.info(f'Post {post.title} added')
-            except Exception as ex:
-                logger.error('app_post: ', ex)
-            finally:
-                return redirect(url_for('routes.admin'))
-        elif form.validate_on_submit() and form.preview.data:
-            date_posted = datetime.datetime.utcnow()
-            title = form.title.data
-            content = form.content.data
-            slug = form.slug.data
-            tags = Tags.query.filter(Tags.id.in_(form.tags.data))
-            logger.info(f'Preview post {title}')
-            return render_template('preview.html',
-                                   title=title,
-                                   content=content,
-                                   tags=tags,
-                                   slug=slug,
-                                   date_posted=date_posted)
-        # redirect to the page
-        return render_template('add_post.html', form=form)
-    else:
-        return redirect(url_for('routes.login'))
+    logger.info('Went on the add post page')
+    form = PostForm()
+    form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
+    if form.validate_on_submit() and form.submit.data:
+        try:
+            post = Posts(title=form.title.data,
+                         content=form.content.data,
+                         slug=form.slug.data,
+                         # image=,
+                         tags=Tags.query.filter(Tags.id.in_(form.tags.data)).all())
+            # clear the form
+            form.title.data = ''
+            form.content.data = ''
+            form.slug.data = ''
+            form.image.data = ''
+            # add post data to database
+            db.session.add(post)
+            db.session.commit()
+            # return a message
+            flash('Post submitted successfully!')
+            logger.info(f'Post {post.title} added')
+        except Exception as ex:
+            logger.error('app_post: ', ex)
+        finally:
+            return redirect(url_for('routes.admin'))
+    elif form.validate_on_submit() and form.preview.data:
+        date_posted = datetime.datetime.utcnow()
+        title = form.title.data
+        content = form.content.data
+        slug = form.slug.data
+        tags = Tags.query.filter(Tags.id.in_(form.tags.data))
+        logger.info(f'Preview post {title}')
+        return render_template('preview.html',
+                               title=title,
+                               content=content,
+                               tags=tags,
+                               slug=slug,
+                               date_posted=date_posted)
+    # redirect to the page
+    return render_template('add_post.html', form=form)
 
 
 # pass search form to navbar,
@@ -179,78 +174,72 @@ def contacts():
 
 
 @bp.route('/delete_<int:id>', methods=['GET', 'POST'])
+@custom_login_required
 def delete_post(id):
-    if 'user_id' in session:
-        logger.info('Went on the delete page')
-        # request post that we need to delete
-        post_to_delete = Posts.query.get_or_404(id)
-        try:
-            # deleting post
-            db.session.delete(post_to_delete)
-            db.session.commit()
-            flash('Post deleted')
-            logger.info(f'Post {post_to_delete.title} deleted')
+    logger.info('Went on the delete page')
+    # request post that we need to delete
+    post_to_delete = Posts.query.get_or_404(id)
+    try:
+        # deleting post
+        db.session.delete(post_to_delete)
+        db.session.commit()
+        flash('Post deleted')
+        logger.info(f'Post {post_to_delete.title} deleted')
 
-        except Exception as ex:
-            logger.error('delete_post: ', ex)
-            flash(f'Something is wrong! Error: {ex}')
-        finally:
-            return redirect(url_for('routes.admin'))
-    else:
-        return redirect(url_for('routes.login'))
+    except Exception as ex:
+        logger.error('delete_post: ', ex)
+        flash(f'Something is wrong! Error: {ex}')
+    finally:
+        return redirect(url_for('routes.admin'))
 
 
 @bp.route('/delete_tag_<int:id>', methods=['GET', 'POST'])
+@custom_login_required
 def delete_tag(id):
-    if 'user_id' in session:
-        logger.info('Went on the delete tag page')
-        # request tag that we need to delete
-        tag_to_delete = Tags.query.get_or_404(id)
-        try:
-            # deleting tag
-            db.session.delete(tag_to_delete)
-            db.session.commit()
-            flash('Tag deleted')
-            logger.info(f'Tag {tag_to_delete.tag_name} deleted')
+    logger.info('Went on the delete tag page')
+    # request tag that we need to delete
+    tag_to_delete = Tags.query.get_or_404(id)
+    try:
+        # deleting tag
+        db.session.delete(tag_to_delete)
+        db.session.commit()
+        flash('Tag deleted')
+        logger.info(f'Tag {tag_to_delete.tag_name} deleted')
 
-        except Exception as ex:
-            logger.error('delete tag: ', ex)
-            flash(f'Something is wrong! Error: {ex}')
-        finally:
-            return redirect(url_for('routes.admin'))
-    else:
-        return redirect(url_for('routes.login'))
+    except Exception as ex:
+        logger.error('delete tag: ', ex)
+        flash(f'Something is wrong! Error: {ex}')
+    finally:
+        return redirect(url_for('routes.admin'))
 
 
 @bp.route('/edit_post_<int:id>', methods=['GET', 'POST'])
+@custom_login_required
 def edit_post(id):
-    if 'user_id' in session:
-        # request the post that we need to edit
-        post = Posts.query.get_or_404(id)
-        logger.info(f'Went on the edit post {post.title} page')
-        form = PostForm()
-        selected_tags = [tag.id for tag in post.tags]
-        form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
-        if form.validate_on_submit():
-            # passing post data from form to DB
-            post.title = form.title.data
-            post.content = form.content.data
-            post.slug = form.slug.data
-            post.tags = Tags.query.filter(Tags.id.in_(form.tags.data)).all()
-            # update database
-            db.session.add(post)
-            db.session.commit()
-            flash("Post has been updated")
-            logger.info(f'Post {post.title} was updated')
-            return redirect(url_for('routes.admin'))
-        # passing post data to the form
-        form.title.data = post.title
-        form.content.data = post.content
-        form.slug.data = post.slug
-        form.tags.data = selected_tags
-        return render_template('edit_post.html', form=form)
-    else:
-        return redirect(url_for('routes.login'))
+    # request the post that we need to edit
+    post = Posts.query.get_or_404(id)
+    logger.info(f'Went on the edit post {post.title} page')
+    form = PostForm()
+    selected_tags = [tag.id for tag in post.tags]
+    form.tags.choices = [(tag.id, tag.tag_name) for tag in Tags.query.all()]
+    if form.validate_on_submit():
+        # passing post data from form to DB
+        post.title = form.title.data
+        post.content = form.content.data
+        post.slug = form.slug.data
+        post.tags = Tags.query.filter(Tags.id.in_(form.tags.data)).all()
+        # update database
+        db.session.add(post)
+        db.session.commit()
+        flash("Post has been updated")
+        logger.info(f'Post {post.title} was updated')
+        return redirect(url_for('routes.admin'))
+    # passing post data to the form
+    form.title.data = post.title
+    form.content.data = post.content
+    form.slug.data = post.slug
+    form.tags.data = selected_tags
+    return render_template('edit_post.html', form=form)
 
 
 @bp.route('/posts')
