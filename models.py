@@ -36,7 +36,7 @@ class Tags(db.Model):
     tag_name = db.Column(db.String(50))
 
     def __repr__(self):
-        return f'Tag {self.id} - {self.tag_name}'
+        return self.tag_name
 
 
 class Users(db.Model, UserMixin):

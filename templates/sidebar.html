@@ -27,7 +27,7 @@
                     <a href="{{ url_for('routes.single_post', slug=popular.slug)}}"
                        class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="w-100 justify-content-between">
-                            <img src="static/images/coding.jpg" alt="" class="img-fluid float-left">
+                            <img src="{{url_for('static', filename='images/coding.jpg')}}" alt="" class="img-fluid float-left">
                             <h5 class="mb-1">{{ popular.title }}</h5>
                             <small>{{ convert(popular.date_posted) }}</small>
                         </div>

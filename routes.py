@@ -310,9 +310,11 @@ def page_not_found(error):
 
 @bp.route('/test1')
 def test():
-    slugs = Posts.query.with_entities(Posts.slug).all()
+    # slugs = Posts.query.with_entities(Posts.slug).all()
+    tags = Tags.query.all(Tags.tag_name)
+    logger.info(tags)
     return render_template('test_template.html',
-                           result=slugs)
+                           result=tags)
 
 
 # page for single post
@@ -356,14 +358,15 @@ def search():
 
 @bp.route('/<tag>')
 def posts_by_tag(tag):
-    logger.info(f'Posts by tag {tag}')
-    posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
-    # requesting tags
-    tags = Tags.query.all()
-    return render_template('by_tag.html',
-                           tag=tag,
-                           posts=posts,
-                           tags=tags)
+    tag_names = [tag.tag_name for tag in Tags.query.all()]
+    if tag in tag_names:
+        logger.info(f'Posts by tag {tag}')
+        posts = Posts.query.filter(Posts.tags.any(tag_name=tag)).all()
+        return render_template('by_tag.html',
+                               tag=tag,
+                               posts=posts)
+    else:
+        return redirect(url_for('routes.index'))
 
 
 @bp.route("/useful_stuff")

@@ -6,7 +6,7 @@ from .config import Config
 from flask_migrate import Migrate
 
 # TODO fix methods in delete functions
-# TODO check only existing tags in posts_by_tag func
+# TODO throw 4040 if there is no tag in db in posts_by_tag route
 # TODO fix and test convert time function
 # TODO fix posts in russian
 # TODO fix uploading image in post
