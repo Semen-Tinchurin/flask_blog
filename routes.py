@@ -356,7 +356,7 @@ def search():
         return redirect(url_for('routes.index'))
 
 
-@bp.route('/<tag>')
+@bp.route('/tags/<tag>')
 def posts_by_tag(tag):
     tag_names = [tag.tag_name for tag in Tags.query.all()]
     if tag in tag_names:
