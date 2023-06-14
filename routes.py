@@ -369,7 +369,7 @@ def posts_by_tag(tag):
         return redirect(url_for('routes.index'))
 
 
-@bp.route("/useful_stuff")
-def useful_stuff():
-    logger.info('Went on the useful page')
-    return render_template('useful_stuff.html')
+# @bp.route("/useful_stuff")
+# def useful_stuff():
+#     logger.info('Went on the useful page')
+#     return render_template('useful_stuff.html')

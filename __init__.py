@@ -7,11 +7,9 @@ from flask_migrate import Migrate
 
 # TODO fix next and previous posts in single post page
 # TODO fix methods in delete functions
-# TODO throw 4040 if there is no tag in db in posts_by_tag route
+# TODO throw 404 if there is no tag in db in posts_by_tag route
 # TODO fix and test convert time function
 # TODO fix uploading image in post
-# TODO thinc about Recent Reviews, You may also like and leave a reply
-# TODO fix links in posts and sidebar
 # TODO async functions
 
 # https://codepen.io/ig_design/pen/omQXoQ
